@@ -11,7 +11,7 @@ class UserModel extends Model
     protected $allowedFields    = ['username', 'password', 'nama', 'role', 'created_at', 'updated_at'];
     protected $useTimestamps    = true;
 
-    // Fungsi untuk cari user berdasarkan username
+
     public function getByUsername($username)
     {
         return $this->where('username', $username)->first();

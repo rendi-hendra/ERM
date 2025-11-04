@@ -1,53 +1,95 @@
-<?= $this->include('layout/header') ?>
-<?= $this->include('layout/sidebar') ?>
-<?= $this->include('layout/topbar') ?>
+<?= $this->extend('layouts/main') ?>
+<?= $this->section('content') ?>
 
-<div class="container-fluid">
-  <h1 class="h3 mb-4 text-gray-800">Data Pasien</h1>
+<h1 class="text-2xl font-bold mb-2">Master Pasien</h1>
+<p class="text-gray-500 mb-6">Kelola data pasien rumah sakit</p>
 
-  <a href="<?= base_url('/pasien/create') ?>" class="btn btn-primary mb-3">
-    <i class="fas fa-plus"></i> Tambah Pasien
+<div class="flex justify-between items-center mb-4">
+  <form method="get" action="<?= base_url('pasien') ?>" class="inline-flex w-1/2">
+    <input type="text" name="keyword" placeholder="Cari berdasarkan nama atau NIK"
+      value="<?= esc($keyword ?? '') ?>"
+      class="w-1/2 border border-gray-300 rounded-l-xl px-4 py-2">
+    <button type="submit"
+      class="bg-gray-900 text-white px-5 py-2 rounded-r-xl hover:bg-gray-700"><i class="bi bi-search"></i></button>
+  </form>
+
+  <a href="<?= base_url('/pasien/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+    <i class="bi bi-person-plus mr-1"></i> Tambah Pasien
   </a>
-
-  <div class="card shadow mb-4">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <thead class="thead-dark">
-            <tr>
-              <th>No</th>
-              <th>NIK</th>
-              <th>Nama</th>
-              <th>Tanggal Lahir</th>
-              <th>Alamat</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php if (!empty($pasien)) : ?>
-              <?php foreach ($pasien as $index => $p) : ?>
-                <tr>
-                  <td><?= $index + 1 ?></td>
-                  <td><?= esc($p['nik']) ?></td>
-                  <td><?= esc($p['nama']) ?></td>
-                  <td><?= esc($p['tanggal_lahir']) ?></td>
-                  <td><?= esc($p['alamat']) ?></td>
-                  <td>
-                    <a href="<?= base_url('/pasien/edit/' . $p['id']) ?>" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="<?= base_url('/pasien/delete/' . $p['id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus pasien ini?')">Hapus</a>
-                  </td>
-                </tr>
-              <?php endforeach ?>
-            <?php else : ?>
-              <tr>
-                <td colspan="6" class="text-center">Belum ada data</td>
-              </tr>
-            <?php endif ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 </div>
 
-<?= $this->include('layout/footer') ?>
+<div class="bg-white shadow-sm rounded-2xl overflow-hidden">
+  <table class="min-w-full text-sm">
+    <thead class="bg-gray-100 text-gray-700">
+      <tr>
+        <th class="px-4 py-3 text-left font-semibold">NIK</th>
+        <th class="px-4 py-3 text-left font-semibold">Nama</th>
+        <th class="px-4 py-3 text-left font-semibold">Tanggal Lahir</th>
+        <th class="px-4 py-3 text-left font-semibold">Jenis Kelamin</th>
+        <th class="px-4 py-3 text-left font-semibold">No. HP</th>
+        <th class="px-4 py-3 text-left font-semibold">Alamat</th>
+        <th class="px-4 py-3 text-center font-semibold">Aksi</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y">
+      <?php foreach ($pasien as $p): ?>
+        <tr>
+          <td class="px-4 py-3"><?= esc($p['nik']) ?></td>
+          <td class="px-4 py-3"><?= esc($p['nama']) ?></td>
+          <td class="px-4 py-3"><?= date('d/m/Y', strtotime($p['tanggal_lahir'])) ?></td>
+          <td class="px-4 py-3"><?= esc($p['jenis_kelamin']) ?></td>
+          <td class="px-4 py-3"><?= esc($p['no_hp']) ?></td>
+          <td class="px-4 py-3"><?= esc($p['alamat']) ?></td>
+          <td class="px-4 py-3 text-center">
+            <a href="<?= base_url('/pasien/edit/' . $p['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
+              <i class="bi bi-pencil-square text-lg"></i>
+            </a>
+
+            <a href="#"
+              class="text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3 btn-delete"
+              data-url="<?= base_url('/pasien/delete/' . $p['id']) ?>">
+              <i class="bi bi-trash text-lg"></i>
+            </a>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-10">
+  <?= $pager->links('pasien', 'pagination') ?>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const url = this.getAttribute('data-url');
+
+        Swal.fire({
+          title: 'Yakin hapus data ini?',
+          text: "Data yang dihapus tidak bisa dikembalikan!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = url;
+          }
+        });
+      });
+    });
+  });
+</script>
+
+
+<?= $this->endSection() ?>

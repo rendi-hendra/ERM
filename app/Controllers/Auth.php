@@ -11,7 +11,7 @@ class Auth extends BaseController
         helper(['form']);
 
         if (session()->get('logged_in')) {
-            return redirect()->to('/dashboard');
+            return redirect()->to('/pasien');
         }
 
         if ($this->request->getMethod() === 'POST') {
@@ -30,7 +30,7 @@ class Auth extends BaseController
                     'nama'      => $user['nama'],
                     'role'      => $user['role']
                 ]);
-                return redirect()->to('/dashboard');
+                return redirect()->to('/pasien');
             } else {
                 return redirect()->back()->with('error', 'Username atau password salah');
             }
