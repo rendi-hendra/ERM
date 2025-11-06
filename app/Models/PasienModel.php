@@ -19,11 +19,4 @@ class PasienModel extends Model
         'updated_at'
     ];
     protected $useTimestamps    = true;
-
-    public function search($keyword)
-    {
-        return $this->like('nama', $keyword)
-            ->orLike('nik', $keyword)
-            ->findAll();
-    }
 }

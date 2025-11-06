@@ -12,7 +12,7 @@ if (count($links) === 0) {
         $isActive = ! empty($link['active']);
         ?>
         <a href="<?= esc($uri) ?>"
-            class="px-3 py-2 rounded-lg text-sm <?= $isActive ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
+            class="px-3 py-2 rounded-lg text-sm <?= $isActive ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' ?>">
             <?= esc($title) ?>
         </a>
     <?php endforeach; ?>

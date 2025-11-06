@@ -13,15 +13,24 @@ class AsuransiPasienModel extends Model
         'asuransi_id',
         'no_kartu',
         'aktif',
-        'created_at'
+        'created_at',
+        'updated_at'
     ];
     protected $useTimestamps    = true;
 
     public function getWithRelations()
     {
-        return $this->select('asuransi_pasien.*, pasien.nama as nama_pasien, asuransi.nama_asuransi')
-                    ->join('pasien', 'pasien.id = asuransi_pasien.pasien_id')
-                    ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id')
-                    ->findAll();
+        return $this->select('asuransi_pasien.*, pasien.nama as nama_pasien, pasien.nik as nik, asuransi.nama_asuransi')
+            ->join('pasien', 'pasien.id = asuransi_pasien.pasien_id')
+            ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id');
+    }
+
+    public function search($keyword)
+    {
+        return $this->groupStart()
+            ->like('pasien.nama', $keyword)
+            ->orLike('asuransi.nama_asuransi', $keyword)
+            ->orLike('asuransi_pasien.no_kartu', $keyword)
+            ->groupEnd();
     }
 }

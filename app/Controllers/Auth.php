@@ -10,10 +10,6 @@ class Auth extends BaseController
     {
         helper(['form']);
 
-        if (session()->get('logged_in')) {
-            return redirect()->to('/pasien');
-        }
-
         if ($this->request->getMethod() === 'POST') {
             $userModel = new UserModel();
             $username = $this->request->getPost('username');
@@ -34,6 +30,10 @@ class Auth extends BaseController
             } else {
                 return redirect()->back()->with('error', 'Username atau password salah');
             }
+        }
+
+        if (session()->get('logged_in')) {
+            return redirect()->to('/pasien');
         }
 
         return view('auth/login');

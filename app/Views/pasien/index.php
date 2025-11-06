@@ -32,27 +32,35 @@
       </tr>
     </thead>
     <tbody class="divide-y">
-      <?php foreach ($pasien as $p): ?>
+      <?php if (empty($pasien)): ?>
         <tr>
-          <td class="px-4 py-3"><?= esc($p['nik']) ?></td>
-          <td class="px-4 py-3"><?= esc($p['nama']) ?></td>
-          <td class="px-4 py-3"><?= date('d/m/Y', strtotime($p['tanggal_lahir'])) ?></td>
-          <td class="px-4 py-3"><?= esc($p['jenis_kelamin']) ?></td>
-          <td class="px-4 py-3"><?= esc($p['no_hp']) ?></td>
-          <td class="px-4 py-3"><?= esc($p['alamat']) ?></td>
-          <td class="px-4 py-3 text-center">
-            <a href="<?= base_url('/pasien/edit/' . $p['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
-              <i class="bi bi-pencil-square text-lg"></i>
-            </a>
-
-            <a href="#"
-              class="text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3 btn-delete"
-              data-url="<?= base_url('/pasien/delete/' . $p['id']) ?>">
-              <i class="bi bi-trash text-lg"></i>
-            </a>
+          <td colspan="7" class="px-4 py-3 text-center text-gray-500">
+            Belum ada data pasien
           </td>
         </tr>
-      <?php endforeach; ?>
+      <?php else: ?>
+        <?php foreach ($pasien as $p): ?>
+          <tr>
+            <td class="px-4 py-3"><?= esc($p['nik']) ?></td>
+            <td class="px-4 py-3"><?= esc($p['nama']) ?></td>
+            <td class="px-4 py-3"><?= date('d/m/Y', strtotime($p['tanggal_lahir'])) ?></td>
+            <td class="px-4 py-3"><?= esc($p['jenis_kelamin']) ?></td>
+            <td class="px-4 py-3"><?= esc($p['no_hp']) ?></td>
+            <td class="px-4 py-3"><?= esc($p['alamat']) ?></td>
+            <td class="px-4 py-3 text-center">
+              <a href="<?= base_url('/pasien/edit/' . $p['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
+                <i class="bi bi-pencil-square text-lg"></i>
+              </a>
+
+              <a href="#"
+                class="text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3 btn-delete"
+                data-url="<?= base_url('/pasien/delete/' . $p['id']) ?>">
+                <i class="bi bi-trash text-lg"></i>
+              </a>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </tbody>
   </table>
 </div>
@@ -60,6 +68,23 @@
 <div class="mt-10">
   <?= $pager->links('pasien', 'pagination') ?>
 </div>
+
+<?php if (session()->getFlashdata('success')): ?>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      Toastify({
+        text: "<?= session()->getFlashdata('success') ?>",
+        duration: 3000,
+        close: false,
+        gravity: "top",
+        position: "right",
+        style: {
+          background: "#36b526",
+        }
+      }).showToast();
+    });
+  </script>
+<?php endif; ?>
 
 
 <script>

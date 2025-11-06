@@ -18,7 +18,7 @@
 
       <!-- NIK -->
       <div>
-        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
+        <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
         <input type="text" name="nik" id="nik"
           class="w-full border <?= isset($validation) && $validation->hasError('nik') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           value="<?= esc($oldInput['nik'] ??  ($pasien['nik']) ?? '') ?>" require>
