@@ -6,7 +6,7 @@
 
 <div class="flex justify-between items-center mb-4">
     <form method="get" action="<?= base_url('asuransi-pasien') ?>" class="inline-flex w-1/2">
-        <input type="text" name="keyword" placeholder="Cari berdasarkan nama atau no.kontak"
+        <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan nik nama atau no.kartu"
             value="<?= esc($keyword ?? '') ?>"
             class="w-1/2 border border-gray-300 rounded-l-xl px-4 py-2">
         <button type="submit"
@@ -14,7 +14,7 @@
     </form>
 
     <a href="<?= base_url('/asuransi-pasien/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-        <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah Asuransi
+        <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah Asuransi Pasien
     </a>
 </div>
 
@@ -83,6 +83,14 @@
         });
     </script>
 <?php endif; ?>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function() {
+        setTimeout(() => {
+            document.getElementById('keyword').value = '';
+        }, 100);
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

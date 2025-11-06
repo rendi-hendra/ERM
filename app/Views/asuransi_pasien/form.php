@@ -82,4 +82,47 @@
   </div>
 </div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+
+    new TomSelect("#pasien", {
+      placeholder: "Cari pasien berdasarkan nama atau NIK...",
+      create: false,
+      sortField: {
+        field: "text",
+        direction: "asc"
+      },
+
+      render: {
+        option: function(data, escape) {
+          return `<div class="py-1 px-2">${escape(data.text)}</div>`;
+        },
+        item: function(data, escape) {
+          return `<div class="text-gray-800">${escape(data.text)}</div>`;
+        }
+      }
+    });
+
+    new TomSelect("#asuransi", {
+      placeholder: "Cari asuransi berdasarkan nama ",
+      create: false,
+      sortField: {
+        field: "text",
+        direction: "asc"
+      },
+
+      render: {
+        option: function(data, escape) {
+          return `<div class="py-1 px-2">${escape(data.text)}</div>`;
+        },
+        item: function(data, escape) {
+          return `<div class="text-gray-800">${escape(data.text)}</div>`;
+        }
+      }
+    });
+  });
+</script>
+
+
 <?= $this->endSection() ?>
