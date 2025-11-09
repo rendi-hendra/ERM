@@ -1,0 +1,164 @@
+<?= $this->extend('layouts/main') ?>
+<?= $this->section('content') ?>
+
+<div class="p-6">
+  <h1 class="max-w-3xl mx-auto text-2xl font-bold text-gray-800 mb-6">
+    <?= isset($kunjungan) ? 'Edit Kunjungan Pasien' : 'Tambah Kunjungan Pasien' ?>
+  </h1>
+
+  <div class="max-w-3xl mx-auto bg-white shadow-md rounded-xl p-8">
+    <div class="border-b border-gray-200 pb-2">
+      <h2 class="text-lg font-semibold text-gray-700">
+        <?= isset($kunjungan) ? 'Form Edit Kunjungan Pasien' : 'Form Tambah Kunjungan Pasien' ?>
+      </h2>
+    </div>
+
+    <form method="post" action="<?= isset($kunjungan) ? base_url('kunjungan/update/' . $kunjungan['id']) : base_url('kunjungan/create') ?>" class="space-y-5">
+      <?= csrf_field() ?>
+      <div>
+        <label for="pasien" class="block text-sm font-medium text-gray-700 mb-1">Pasien <span class="text-red-500">*</span></label>
+        <select name="pasien_id" id="pasien"
+          class="w-full border <?= isset($validation) && $validation->hasError('pasien_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+          <option value="">-- Pilih Pasien --</option>
+          <?php foreach ($pasien as $p): ?>
+            <option value="<?= esc($p['id']) ?>" <?= esc($kunjungan['pasien_id'] ?? '') == esc($p['id']) ? 'selected' : '' ?>><?= esc($p['nama']) ?> - <?= esc($p['nik']) ?></option>
+          <?php endforeach; ?>
+        </select>
+        <?php if (isset($validation) && $validation->hasError('pasien_id')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('pasien_id') ?></p>
+        <?php endif; ?>
+      </div>
+
+      <div>
+        <label for="tanggal_kunjungan" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Kunjungan <span class="text-red-500">*</span></label>
+        <input type="date" name="tanggal_kunjungan" id="tanggal_kunjungan"
+          class="w-full border <?= isset($validation) && $validation->hasError('tanggal_kunjungan') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+          value="<?= esc($oldInput['tanggal_kunjungan'] ?? ($kunjungan['tanggal_kunjungan']) ?? '') ?>" require>
+        <?php if (isset($validation) && $validation->hasError('tanggal_kunjungan')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('tanggal_kunjungan') ?></p>
+        <?php endif; ?>
+      </div>
+
+      <div>
+        <label for="keluhan" class="block text-sm font-medium text-gray-700 mb-1">Keluhan <span class="text-red-500">*</span></label>
+        <input type="text" name="keluhan" id="kelujan"
+          class="w-full border <?= isset($validation) && $validation->hasError('keluhan') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+          placeholder="Contoh: Demam"
+          value="<?= esc($oldInput['keluhan'] ?? ($kunjungan['keluhan']) ?? '') ?>" require>
+        <?php if (isset($validation) && $validation->hasError('keluhan')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('keluhan') ?></p>
+        <?php endif; ?>
+      </div>
+
+      <div>
+        <label for="dokter" class="block text-sm font-medium text-gray-700 mb-1">Dokter <span class="text-red-500">*</span></label>
+        <input type="text" name="dokter" id="dokter"
+          class="w-full border <?= isset($validation) && $validation->hasError('dokter') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+          placeholder="Contoh: Dr.Rendi"
+          value="<?= esc($oldInput['dokter'] ?? ($kunjungan['dokter']) ?? '') ?>" require>
+        <?php if (isset($validation) && $validation->hasError('dokter')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('dokter') ?></p>
+        <?php endif; ?>
+      </div>
+
+      <div>
+        <label for="metode_pembayaran" class="block text-sm font-medium text-gray-700 mb-1">Metode Pembayaran <span class="text-red-500">*</span></label>
+        <select name="metode_pembayaran" id="metode_pembayaran"
+          class="w-full border <?= isset($validation) && $validation->hasError('metode_pembayaran') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+          <option value="">-- Pilih Metode Pembayaran --</option>
+          <option value="tunai" <?= esc($kunjungan['metode_pembayaran'] ?? '') == 'tunai' ? 'selected' : '' ?>>Tunai</option>
+          <option value="asuransi" <?= esc($kunjungan['metode_pembayaran'] ?? '') == 'asuransi' ? 'selected' : '' ?>>Asuransi</option>
+        </select>
+        <?php if (isset($validation) && $validation->hasError('metode_pembayaran')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('metode_pembayaran') ?></p>
+        <?php endif; ?>
+      </div>
+
+      <div>
+        <label for="asuransi_pasien_id" class="block text-sm font-medium text-gray-700 mb-1">Asuransi <span class="text-red-500">*</span></label>
+        <select name="asuransi_pasien_id" id="asuransi_pasien_id"
+          class="w-full border <?= isset($validation) && $validation->hasError('asuransi_pasien_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+          <option value="">-- Pilih Asuransi --</option>
+
+        </select>
+        <?php if (isset($validation) && $validation->hasError('asuransi_pasien_id')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('asuransi_pasien_id') ?></p>
+        <?php endif; ?>
+      </div>
+
+      <div class="flex justify-between pt-4">
+        <a href="<?= base_url('kunjungan') ?>" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
+          ← Kembali
+        </a>
+        <button type="submit"
+          class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+          Simpan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+    const kunjungan = <?= isset($kunjungan) ? 'true' : 'false' ?>;
+
+    const pasienSelect = new TomSelect("#pasien", {
+      placeholder: "Pilih pasien...",
+    });
+
+    const asuransiSelect = new TomSelect("#asuransi_pasien_id", {
+      placeholder: "Pilih asuransi...",
+    });
+
+
+    if (kunjungan) {
+      const asuransiPasienId = document.querySelector('#asuransi_pasien_id');
+      const pasienId = document.querySelector(`#pasien`);
+
+      const url = `<?= base_url('/asuransi-pasien/getByPasien/') ?>${pasienId.value}`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          data.forEach(item => {
+            asuransiSelect.addOption({
+              value: item.id,
+              text: item.nama_asuransi
+            });
+          });
+          asuransiSelect.setValue(data[0].id ?? '');
+          asuransiSelect.refreshOptions(false);
+        });
+
+    }
+
+    document.querySelector("#pasien").addEventListener("change", function() {
+      const pasienId = this.value;
+      const url = `<?= base_url('/asuransi-pasien/getByPasien/') ?>${pasienId}`;
+
+      // Hapus semua opsi lama
+      asuransiSelect.clear();
+      asuransiSelect.clearOptions();
+
+      if (pasienId) {
+        fetch(url)
+          .then(res => res.json())
+          .then(data => {
+            data.forEach(item => {
+              asuransiSelect.addOption({
+                value: item.id,
+                text: item.nama_asuransi
+              });
+            });
+            asuransiSelect.setValue(data.length ? data[0].id : '');
+            asuransiSelect.refreshOptions(false);
+          });
+      }
+    });
+
+  });
+</script>
+
+
+<?= $this->endSection() ?>

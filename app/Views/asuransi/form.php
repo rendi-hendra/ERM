@@ -16,8 +16,9 @@
     <form method="post" action="<?= isset($asuransi) ? base_url('asuransi/update/' . $asuransi['id']) : base_url('asuransi/create') ?>" class="space-y-5">
       <?= csrf_field() ?>
       <div>
-        <label for="nama_asuransi" class="block text-sm font-medium text-gray-700 mb-1">Nama Asuransi</label>
+        <label for="nama_asuransi" class="block text-sm font-medium text-gray-700 mb-1">Nama Asuransi <span class="text-red-500">*</span></label>
         <input type="text" name="nama_asuransi" id="nama_asuransi"
+          placeholder="contoh: Asuransi Sehat Selalu"
           class="w-full border <?= isset($validation) && $validation->hasError('nama_asuransi') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           value="<?= esc($oldInput['nama_asuransi'] ??  ($asuransi['nama_asuransi']) ?? '') ?>" require>
 
@@ -27,8 +28,9 @@
       </div>
 
       <div>
-        <label for="no_kontak" class="block text-sm font-medium text-gray-700 mb-1">No. Kontak</label>
+        <label for="no_kontak" class="block text-sm font-medium text-gray-700 mb-1">No. Kontak <span class="text-red-500">*</span></label>
         <input type="text" name="no_kontak" id="no_kontak"
+          placeholder="contoh: 081234567890"
           class="w-full border <?= isset($validation) && $validation->hasError('no_kontak') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
           value="<?= esc($oldInput['no_kontak'] ?? ($asuransi['no_kontak']) ?? '') ?>" require>
         <?php if (isset($validation) && $validation->hasError('no_kontak')): ?>
@@ -37,8 +39,9 @@
       </div>
 
       <div>
-        <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+        <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat <span class="text-red-500">*</span></label>
         <textarea name="alamat" id="alamat" rows="3"
+          placeholder="contoh: Jl. Merdeka No.123, Jakarta"
           class="w-full border <?= isset($validation) && $validation->hasError('alamat') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" require><?= esc($oldInput['alamat'] ?? ($asuransi['alamat']) ?? '') ?></textarea>
         <?php if (isset($validation) && $validation->hasError('alamat')): ?>
           <p class="text-red-500 text-sm mt-1"><?= $validation->getError('alamat') ?></p>
