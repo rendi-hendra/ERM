@@ -40,6 +40,19 @@ class AsuransiPasien extends BaseController
         ]);
     }
 
+    public function getByPasien($pasien_id)
+    {
+        $asuransiPasienModel = $this->asuransiPasienModel;
+
+        $data = $asuransiPasienModel
+            ->select('asuransi_pasien.id, asuransi.nama_asuransi')
+            ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id')
+            ->where('asuransi_pasien.pasien_id', $pasien_id)
+            ->findAll();
+
+        return $this->response->setJSON($data);
+    }
+
 
     public function create()
     {
@@ -187,6 +200,6 @@ class AsuransiPasien extends BaseController
     public function delete($id)
     {
         $this->asuransiPasienModel->delete($id);
-        return redirect()->to('/asuransi_pasien')->with('success', 'Data asuransi pasien berhasil dihapus.');
+        return redirect()->to('/asuransi-pasien')->with('success', 'Data asuransi pasien berhasil dihapus.');
     }
 }

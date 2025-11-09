@@ -29,6 +29,7 @@ class AsuransiPasienModel extends Model
     {
         return $this->groupStart()
             ->like('pasien.nama', $keyword)
+            ->orLike('pasien.nik', $keyword)
             ->orLike('asuransi.nama_asuransi', $keyword)
             ->orLike('asuransi_pasien.no_kartu', $keyword)
             ->groupEnd();

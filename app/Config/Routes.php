@@ -31,4 +31,14 @@ $routes->group('asuransi-pasien', ['filter' => 'auth'], function ($routes) {
     $routes->get('edit/(:num)', 'AsuransiPasien::edit/$1');
     $routes->post('update/(:num)', 'AsuransiPasien::update/$1');
     $routes->get('delete/(:num)', 'AsuransiPasien::delete/$1');
+    $routes->get('getByPasien/(:num)', 'AsuransiPasien::getByPasien/$1');
+});
+
+
+$routes->group('kunjungan', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Kunjungan::index');
+    $routes->match(['get', 'post'], 'create', 'Kunjungan::create');
+    $routes->get('edit/(:num)', 'Kunjungan::edit/$1');
+    $routes->post('update/(:num)', 'Kunjungan::update/$1');
+    $routes->get('delete/(:num)', 'Kunjungan::delete/$1');
 });

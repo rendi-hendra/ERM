@@ -16,7 +16,7 @@
     <form method="post" action="<?= isset($asuransiPasien) ? base_url('asuransi-pasien/update/' . $asuransiPasien['id']) : base_url('asuransi-pasien/create') ?>" class="space-y-5">
       <?= csrf_field() ?>
       <div>
-        <label for="pasien" class="block text-sm font-medium text-gray-700 mb-1">Pasien *</label>
+        <label for="pasien" class="block text-sm font-medium text-gray-700 mb-1">Pasien <span class="text-red-500">*</span></label>
         <select name="pasien_id" id="pasien"
           class="w-full border <?= isset($validation) && $validation->hasError('pasien_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
           <option value="">-- Pilih Pasien --</option>
@@ -30,7 +30,7 @@
       </div>
 
       <div>
-        <label for="asuransi" class="block text-sm font-medium text-gray-700 mb-1">Asuransi *</label>
+        <label for="asuransi" class="block text-sm font-medium text-gray-700 mb-1">Asuransi <span class="text-red-500">*</span></label>
         <select name="asuransi_id" id="asuransi"
           class="w-full border <?= isset($validation) && $validation->hasError('asuransi_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
           <option value="">-- Pilih Asuransi --</option>
@@ -44,7 +44,7 @@
       </div>
 
       <div>
-        <label for="no_kartu" class="block text-sm font-medium text-gray-700 mb-1">No. kartu Asuransi *</label>
+        <label for="no_kartu" class="block text-sm font-medium text-gray-700 mb-1">No. kartu Asuransi <span class="text-red-500">*</span></label>
         <input type="text" name="no_kartu" id="no_kartu"
           class="w-full border <?= isset($validation) && $validation->hasError('no_kartu') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
           placeholder="Contoh: 0001234567890"
@@ -55,7 +55,7 @@
       </div>
 
       <div>
-        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
+        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
         <select name="aktif" id="sttaus"
           class="w-full border <?= isset($validation) && $validation->hasError('asuransi_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
           <option value="">-- Pilih Status --</option>
@@ -81,5 +81,48 @@
     </form>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+
+    new TomSelect("#pasien", {
+      placeholder: "Cari pasien berdasarkan nama atau NIK...",
+      create: false,
+      sortField: {
+        field: "text",
+        direction: "asc"
+      },
+
+      render: {
+        option: function(data, escape) {
+          return `<div class="py-1 px-2">${escape(data.text)}</div>`;
+        },
+        item: function(data, escape) {
+          return `<div class="text-gray-800">${escape(data.text)}</div>`;
+        }
+      }
+    });
+
+    new TomSelect("#asuransi", {
+      placeholder: "Cari asuransi berdasarkan nama ",
+      create: false,
+      sortField: {
+        field: "text",
+        direction: "asc"
+      },
+
+      render: {
+        option: function(data, escape) {
+          return `<div class="py-1 px-2">${escape(data.text)}</div>`;
+        },
+        item: function(data, escape) {
+          return `<div class="text-gray-800">${escape(data.text)}</div>`;
+        }
+      }
+    });
+  });
+</script>
+
 
 <?= $this->endSection() ?>

@@ -18,8 +18,9 @@
 
       <!-- NIK -->
       <div>
-        <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
+        <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK <span class="text-red-500">*</span></label>
         <input type="text" name="nik" id="nik"
+          placeholder="Contoh: 3201012000010001"
           class="w-full border <?= isset($validation) && $validation->hasError('nik') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           value="<?= esc($oldInput['nik'] ??  ($pasien['nik']) ?? '') ?>" require>
 
@@ -31,8 +32,9 @@
 
       <!-- Nama -->
       <div>
-        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
         <input type="text" name="nama" id="nama"
+          placeholder="Contoh: Budi Santoso"
           class="w-full border <?= isset($validation) && $validation->hasError('nama') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
           value="<?= esc($oldInput['nama'] ?? ($pasien['nama']) ?? '') ?>" require>
         <?php if (isset($validation) && $validation->hasError('nama')): ?>
@@ -43,7 +45,7 @@
       <!-- Tanggal Lahir & Jenis Kelamin -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
+          <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir <span class="text-red-500">*</span></label>
           <input type="date" name="tanggal_lahir" id="tanggal_lahir"
             class="w-full border <?= isset($validation) && $validation->hasError('tanggal_lahir') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
             value="<?= esc($oldInput['tanggal_lahir'] ?? ($pasien['tanggal_lahir']) ?? '') ?>" require>
@@ -53,7 +55,7 @@
         </div>
 
         <div>
-          <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+          <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin <span class="text-red-500">*</span></label>
           <select name="jenis_kelamin" id="jenis_kelamin"
             class="w-full border <?= isset($validation) && $validation->hasError('jenis_kelamin') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
             <option value="">-- Pilih Jenis Kelamin --</option>
@@ -68,8 +70,9 @@
 
       <!-- No HP -->
       <div>
-        <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">No. HP</label>
+        <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">No. HP <span class="text-red-500">*</span></label>
         <input type="text" name="no_hp" id="no_hp"
+          placeholder="Contoh: 081234567890"
           class="w-full border <?= isset($validation) && $validation->hasError('no_hp') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
           value="<?= esc($oldInput['no_hp'] ?? ($pasien['no_hp']) ?? '') ?>" require>
         <?php if (isset($validation) && $validation->hasError('no_hp')): ?>
@@ -79,8 +82,9 @@
 
       <!-- Alamat -->
       <div>
-        <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+        <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat <span class="text-red-500">*</span></label>
         <textarea name="alamat" id="alamat" rows="3"
+          placeholder="contoh: Jl. Merdeka No.123, Jakarta"
           class="w-full border <?= isset($validation) && $validation->hasError('alamat') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" require><?= esc($oldInput['alamat'] ?? ($pasien['alamat']) ?? '') ?></textarea>
         <?php if (isset($validation) && $validation->hasError('alamat')): ?>
           <p class="text-red-500 text-sm mt-1"><?= $validation->getError('alamat') ?></p>
