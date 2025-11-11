@@ -18,10 +18,10 @@
       <div>
         <label for="pasien" class="block text-sm font-medium text-gray-700 mb-1">Pasien <span class="text-red-500">*</span></label>
         <select name="pasien_id" id="pasien"
-          class="w-full border <?= isset($validation) && $validation->hasError('pasien_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+          class="<?= isset($validation) && $validation->hasError('pasien_id') ? 'border-red-500' : 'border-gray-300' ?>">
           <option value="">-- Pilih Pasien --</option>
           <?php foreach ($pasien as $p): ?>
-            <option value="<?= esc($p['id']) ?>" <?= esc($asuransiPasien['pasien_id'] ?? '') == esc($p['id']) ? 'selected' : '' ?>><?= esc($p['nama']) ?> - <?= esc($p['nik']) ?></option>
+            <option value="<?= esc($p['id']) ?>" <?= esc($asuransiPasien['pasien_id'] ?? $oldInput['pasien_id'] ?? '') == esc($p['id']) ? 'selected' : '' ?>><?= esc($p['nama']) ?> - <?= esc($p['nik']) ?></option>
           <?php endforeach; ?>
         </select>
         <?php if (isset($validation) && $validation->hasError('pasien_id')): ?>
@@ -32,10 +32,10 @@
       <div>
         <label for="asuransi" class="block text-sm font-medium text-gray-700 mb-1">Asuransi <span class="text-red-500">*</span></label>
         <select name="asuransi_id" id="asuransi"
-          class="w-full border <?= isset($validation) && $validation->hasError('asuransi_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+          class="w-full <?= isset($validation) && $validation->hasError('asuransi_id') ? 'border-red-500' : 'border-gray-300' ?>">
           <option value="">-- Pilih Asuransi --</option>
           <?php foreach ($asuransi as $a): ?>
-            <option value="<?= esc($a['id']) ?>" <?= esc($asuransiPasien['asuransi_id'] ?? '') == esc($a['id']) ? 'selected' : '' ?>><?= esc($a['nama_asuransi']) ?></option>
+            <option value="<?= esc($a['id']) ?>" <?= esc($asuransiPasien['asuransi_id'] ??  $oldInput['asuransi_id'] ?? '') == esc($a['id']) ? 'selected' : '' ?>><?= esc($a['nama_asuransi']) ?></option>
           <?php endforeach; ?>
         </select>
         <?php if (isset($validation) && $validation->hasError('asuransi_id')): ?>
@@ -59,8 +59,8 @@
         <select name="aktif" id="sttaus"
           class="w-full border <?= isset($validation) && $validation->hasError('asuransi_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
           <option value="">-- Pilih Status --</option>
-          <option value="0" <?= esc($asuransiPasien['aktif'] ?? '') == '0' ? 'selected' : '' ?>>Nonaktif</option>
-          <option value="1" <?= esc($asuransiPasien['aktif'] ?? '') == '1' ? 'selected' : '' ?>>Aktif</option>
+          <option value="0" <?= esc($asuransiPasien['aktif'] ??  $oldInput['aktif'] ?? '') == '0' ? 'selected' : '' ?>>Nonaktif</option>
+          <option value="1" <?= esc($asuransiPasien['aktif'] ??  $oldInput['aktif'] ?? '') == '1' ? 'selected' : '' ?>>Aktif</option>
         </select>
         <?php if (isset($validation) && $validation->hasError('aktif')): ?>
           <p class="text-red-500 text-sm mt-1"><?= $validation->getError('aktif') ?></p>

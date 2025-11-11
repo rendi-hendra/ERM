@@ -42,8 +42,8 @@
 
         <div class="flex items-center space-x-3">
             <div class="text-right leading-tight">
-                <div class="text-sm font-semibold text-gray-800">Administrator</div>
-                <div class="text-xs text-gray-500">Admin</div>
+                <div class="text-sm font-semibold text-gray-800"><?= session()->get('nama') ?></div>
+                <div class="text-xs text-gray-500"><?= session()->get('role') ?></div>
             </div>
             <a href="#"
                 class="flex items-center border border-gray-300 px-3 py-1.5 rounded-lg text-gray-700 hover:bg-gray-100 btn-logout"

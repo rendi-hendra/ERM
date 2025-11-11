@@ -18,10 +18,10 @@
       <div>
         <label for="pasien" class="block text-sm font-medium text-gray-700 mb-1">Pasien <span class="text-red-500">*</span></label>
         <select name="pasien_id" id="pasien"
-          class="w-full border <?= isset($validation) && $validation->hasError('pasien_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+          class="w-full <?= isset($validation) && $validation->hasError('pasien_id') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-2 focus:ring-blue-500">
           <option value="">-- Pilih Pasien --</option>
           <?php foreach ($pasien as $p): ?>
-            <option value="<?= esc($p['id']) ?>" <?= esc($kunjungan['pasien_id'] ?? '') == esc($p['id']) ? 'selected' : '' ?>><?= esc($p['nama']) ?> - <?= esc($p['nik']) ?></option>
+            <option value="<?= esc($p['id']) ?>" <?= esc($kunjungan['pasien_id'] ?? $oldInput['pasien_id'] ?? '') == esc($p['id']) ? 'selected' : '' ?>><?= esc($p['nama']) ?> - <?= esc($p['nik']) ?></option>
           <?php endforeach; ?>
         </select>
         <?php if (isset($validation) && $validation->hasError('pasien_id')): ?>
@@ -31,7 +31,7 @@
 
       <div>
         <label for="tanggal_kunjungan" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Kunjungan <span class="text-red-500">*</span></label>
-        <input type="date" name="tanggal_kunjungan" id="tanggal_kunjungan"
+        <input type="datetime-local" name="tanggal_kunjungan" id="tanggal_kunjungan"
           class="w-full border <?= isset($validation) && $validation->hasError('tanggal_kunjungan') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
           value="<?= esc($oldInput['tanggal_kunjungan'] ?? ($kunjungan['tanggal_kunjungan']) ?? '') ?>" require>
         <?php if (isset($validation) && $validation->hasError('tanggal_kunjungan')): ?>
@@ -55,7 +55,7 @@
         <input type="text" name="dokter" id="dokter"
           class="w-full border <?= isset($validation) && $validation->hasError('dokter') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
           placeholder="Contoh: Dr.Rendi"
-          value="<?= esc($oldInput['dokter'] ?? ($kunjungan['dokter']) ?? '') ?>" require>
+          value="<?= esc($oldInput['dokter']  ?? ($kunjungan['dokter']) ?? '') ?>" require>
         <?php if (isset($validation) && $validation->hasError('dokter')): ?>
           <p class="text-red-500 text-sm mt-1"><?= $validation->getError('dokter') ?></p>
         <?php endif; ?>
@@ -66,8 +66,8 @@
         <select name="metode_pembayaran" id="metode_pembayaran"
           class="w-full border <?= isset($validation) && $validation->hasError('metode_pembayaran') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
           <option value="">-- Pilih Metode Pembayaran --</option>
-          <option value="tunai" <?= esc($kunjungan['metode_pembayaran'] ?? '') == 'tunai' ? 'selected' : '' ?>>Tunai</option>
-          <option value="asuransi" <?= esc($kunjungan['metode_pembayaran'] ?? '') == 'asuransi' ? 'selected' : '' ?>>Asuransi</option>
+          <option value="tunai" <?= esc($kunjungan['metode_pembayaran'] ?? $oldInput['metode_pembayaran'] ?? '') == 'tunai' ? 'selected' : '' ?>>Tunai</option>
+          <option value="asuransi" <?= esc($kunjungan['metode_pembayaran'] ?? $oldInput['metode_pembayaran'] ?? '') == 'asuransi' ? 'selected' : '' ?>>Asuransi</option>
         </select>
         <?php if (isset($validation) && $validation->hasError('metode_pembayaran')): ?>
           <p class="text-red-500 text-sm mt-1"><?= $validation->getError('metode_pembayaran') ?></p>
@@ -77,9 +77,7 @@
       <div>
         <label for="asuransi_pasien_id" class="block text-sm font-medium text-gray-700 mb-1">Asuransi <span class="text-red-500">*</span></label>
         <select name="asuransi_pasien_id" id="asuransi_pasien_id"
-          class="w-full border <?= isset($validation) && $validation->hasError('asuransi_pasien_id') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
-          <option value="">-- Pilih Asuransi --</option>
-
+          class="w-full <?= isset($validation) && $validation->hasError('asuransi_pasien_id') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-2 focus:ring-blue-500">
         </select>
         <?php if (isset($validation) && $validation->hasError('asuransi_pasien_id')): ?>
           <p class="text-red-500 text-sm mt-1"><?= $validation->getError('asuransi_pasien_id') ?></p>
@@ -103,6 +101,7 @@
   document.addEventListener('DOMContentLoaded', function() {
 
     const kunjungan = <?= isset($kunjungan) ? 'true' : 'false' ?>;
+    const oldInputAsuransiPasienId = "<?= esc($oldInput['asuransi_pasien_id'] ?? '') ?>";
 
     const pasienSelect = new TomSelect("#pasien", {
       placeholder: "Pilih pasien...",
@@ -112,8 +111,7 @@
       placeholder: "Pilih asuransi...",
     });
 
-
-    if (kunjungan) {
+    if (oldInputAsuransiPasienId) {
       const asuransiPasienId = document.querySelector('#asuransi_pasien_id');
       const pasienId = document.querySelector(`#pasien`);
 
@@ -130,14 +128,34 @@
           asuransiSelect.setValue(data[0].id ?? '');
           asuransiSelect.refreshOptions(false);
         });
+    }
 
+
+    if (kunjungan) {
+      const asuransiPasienId = document.querySelector('#asuransi_pasien_id');
+      const pasienId = document.querySelector(`#pasien`);
+      const asuransiId = <?= $kunjungan['asuransi_pasien_id'] ?? 0 ?>;
+
+
+      const url = `<?= base_url('/asuransi-pasien/getByPasien/') ?>${pasienId.value}`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          data.forEach(item => {
+            asuransiSelect.addOption({
+              value: item.id,
+              text: item.nama_asuransi
+            });
+          });
+          asuransiSelect.setValue(asuransiId ?? '');
+          asuransiSelect.refreshOptions(false);
+        });
     }
 
     document.querySelector("#pasien").addEventListener("change", function() {
       const pasienId = this.value;
       const url = `<?= base_url('/asuransi-pasien/getByPasien/') ?>${pasienId}`;
 
-      // Hapus semua opsi lama
       asuransiSelect.clear();
       asuransiSelect.clearOptions();
 
