@@ -36,10 +36,6 @@ class Kunjungan extends BaseController
         $kunjungan = $kunjunganModel->paginate(10, 'kunjungan');
         $pager = $this->kunjunganModel->pager;
 
-        // $kunjungans = $this->kunjunganModel->getWithRelations()->findAll();
-
-        // dd($kunjungan[0]['id']);
-
         return view('kunjungan/index', [
             'kunjungan' => $kunjungan,
             'pager' => $pager,
@@ -54,22 +50,12 @@ class Kunjungan extends BaseController
 
         $pasien = $this->pasienModel->select()->findAll();
         $asuransi = $this->asuransiModel->select()->findAll();
-        $kunjungan = $this->kunjunganModel->getWithRelations()->findAll();
 
 
         $asuransiPasien = $this->asuransiPasienModel->select('asuransi_pasien.*, pasien.nik as nik, pasien.nama as nama_pasien, asuransi.nama_asuransi')
             ->join('pasien', 'pasien.id = asuransi_pasien.pasien_id')
             ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id')
             ->findAll();
-
-        // $kunjunganPasien = $this->kunjunganModel->select('kunjungan.*, pasien.nama as nama_pasien, asuransi.nama_asuransi')
-        //     ->join('pasien', 'pasien.id = asuransi_pasien.pasien_id')
-        //     ->join('asuransi', 'asuransi.id = kunjungan.asuransi_pasien_id')
-        //     ->findAll();
-
-
-        // dd($asuransiPasien);
-        // dd($kunjunganPasien);
 
         if ($this->request->getMethod() === 'POST') {
 
@@ -121,7 +107,6 @@ class Kunjungan extends BaseController
 
             if (! $this->validate($rules)) {
                 return view('kunjungan/form', [
-                    // 'kunjungan' => $kunjungan,
                     'asuransi_pasien' => $asuransiPasien,
                     'asuransi' => $asuransi,
                     'pasien' => $pasien,
@@ -139,13 +124,10 @@ class Kunjungan extends BaseController
                 'dokter'                => $this->request->getPost('dokter'),
             ]);
 
-            return redirect()->to('/kunjungan')->with('success', 'Data asuransi pasien berhasil ditambahkan.');
+            return redirect()->to('/kunjungan')->with('success', 'Data kunjungan pasien berhasil ditambahkan.');
         }
 
-        // dd($asuransiPasien);
-
         return view('kunjungan/form', [
-            // 'kunjungan' => $kunjungan,
             'asuransi_pasien' => $asuransiPasien,
             'asuransi' => $asuransi,
             'pasien' => $pasien,
@@ -247,12 +229,12 @@ class Kunjungan extends BaseController
             'dokter'                => $this->request->getPost('dokter'),
         ]);
 
-        return redirect()->to('/kunjungan')->with('success', 'Data asuransi pasien berhasil diperbarui.');
+        return redirect()->to('/kunjungan')->with('success', 'Data kunjungan pasien berhasil diperbarui.');
     }
 
     public function delete($id)
     {
         $this->kunjunganModel->delete($id);
-        return redirect()->to('/kunjungan')->with('success', 'Data asuransi pasien berhasil dihapus.');
+        return redirect()->to('/kunjungan')->with('success', 'Data kunjungan pasien berhasil dihapus.');
     }
 }

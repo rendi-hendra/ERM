@@ -14,7 +14,7 @@
     </form>
 
     <a href="<?= base_url('/kunjungan/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-        <i class="bi bi-file-earmark-plus mr-1"></i></i> Buat Kunjungan Pasien
+        <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah Kunjungan Pasien
     </a>
 </div>
 
