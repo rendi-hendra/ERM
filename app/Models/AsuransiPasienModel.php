@@ -25,6 +25,14 @@ class AsuransiPasienModel extends Model
             ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id');
     }
 
+    public function getWithRelationsNew($pasienId)
+    {
+        return $this->select('asuransi_pasien.*, asuransi.nama_asuransi, asuransi.no_kontak')
+            ->join('pasien', 'pasien.id = asuransi_pasien.pasien_id')
+            ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id')
+            ->where('pasien.id', $pasienId);
+    }
+
     public function search($keyword)
     {
         return $this->groupStart()

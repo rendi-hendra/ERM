@@ -1,13 +1,12 @@
 <?= $this->include('layouts/header') ?>
 <?= $this->include('layouts/navbar') ?>
 
-<div class="min-h-screen">
-  <main class="flex-grow max-w-7xl mx-auto px-6 py-8">
-    <?= $this->renderSection('content') ?>
-  </main>
-</div>
+<main class="flex-grow max-w-7xl mx-auto px-6 py-8 w-full">
+  <?= $this->renderSection('content') ?>
+</main>
 
 <?= $this->include('layouts/footer') ?>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

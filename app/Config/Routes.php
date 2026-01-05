@@ -26,7 +26,7 @@ $routes->group('asuransi', ['filter' => 'auth'], function ($routes) {
 });
 
 $routes->group('asuransi-pasien', ['filter' => 'auth'], function ($routes) {
-    $routes->get('/', 'AsuransiPasien::index');
+    // $routes->get('/', 'AsuransiPasien::index');
     $routes->match(['get', 'post'], 'create', 'AsuransiPasien::create');
     $routes->get('edit/(:num)', 'AsuransiPasien::edit/$1');
     $routes->post('update/(:num)', 'AsuransiPasien::update/$1');

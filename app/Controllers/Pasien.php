@@ -3,15 +3,18 @@
 namespace App\Controllers;
 
 use App\Models\PasienModel;
+use App\Models\AsuransiPasienModel;
 
 class Pasien extends BaseController
 {
     protected $pasienModel;
+    protected $asuransiPasienModel;
     protected $validation;
 
     public function __construct()
     {
         $this->pasienModel = new PasienModel();
+        $this->asuransiPasienModel = new AsuransiPasienModel();
         $this->validation = \Config\Services::validation();
     }
 
@@ -118,8 +121,21 @@ class Pasien extends BaseController
 
     public function edit($id)
     {
+        // Asurnsi pasien
+        $keyword = $this->request->getGet('keyword');
+        $asuransiPasienModel = $this->asuransiPasienModel->getWithRelationsNew($id);
+
+        if ($keyword) {
+            $asuransiPasienModel = $asuransiPasienModel->search($keyword);
+        }
+
+        $asuransiPasien = $asuransiPasienModel->paginate(10, 'asuransi_pasien');
+        $pager = $this->asuransiPasienModel->pager;
+
         $data = [
             'pasien'     => $this->pasienModel->find($id),
+            'asuransiPasien' => $asuransiPasien,
+            'pager' => $pager,
             'validation' => $this->validation
         ];
 

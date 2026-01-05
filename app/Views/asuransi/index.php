@@ -60,7 +60,7 @@
 </div>
 
 <div class="mt-10">
-    <?= $pager->links('pasien', 'pagination') ?>
+    <?= $pager->links('asuransi', 'pagination') ?>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>

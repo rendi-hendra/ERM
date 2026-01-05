@@ -1,9 +1,4 @@
-<?= $this->extend('layouts/main') ?>
-<?= $this->section('content') ?>
-
-<h1 class="text-2xl font-bold mb-2">Asuransi Pasien</h1>
-<p class="text-gray-500 mb-6">Kelola hubungan antara pasien dan asuransi</p>
-
+<h1 class="text-2xl font-bold mb-2 mt-12">Asuransi Pasien</h1>
 <div class="flex justify-between items-center mb-4">
     <form method="get" action="<?= base_url('asuransi-pasien') ?>" class="inline-flex w-1/2">
         <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan nik nama atau no.kartu"
@@ -22,10 +17,9 @@
     <table class="min-w-full text-sm">
         <thead class="bg-gray-100 text-gray-700">
             <tr>
-                <th class="px-4 py-3 text-left font-semibold">NIK</th>
-                <th class="px-4 py-3 text-left font-semibold">Nama Pasien</th>
-                <th class="px-4 py-3 text-left font-semibold">Asuransi</th>
                 <th class="px-4 py-3 text-left font-semibold">No. Kartu</th>
+                <th class="px-4 py-3 text-left font-semibold">Nama Asuransi</th>
+                <th class="px-4 py-3 text-left font-semibold">Hak Kelas</th>
                 <th class="px-4 py-3 text-left font-semibold">Status</th>
                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
             </tr>
@@ -40,10 +34,9 @@
             <?php else: ?>
                 <?php foreach ($asuransiPasien as $a): ?>
                     <tr>
-                        <td class="px-4 py-3"><?= esc($a['nik']) ?></td>
-                        <td class="px-4 py-3"><?= esc($a['nama_pasien']) ?></td>
-                        <td class="px-4 py-3"><?= esc($a['nama_asuransi']) ?></td>
                         <td class="px-4 py-3"><?= esc($a['no_kartu']) ?></td>
+                        <td class="px-4 py-3"><?= esc($a['nama_asuransi']) ?></td>
+                        <td class="px-4 py-3"><?= esc($a['hak_kelas']) ?></td>
                         <td class="px-4 py-3"><?= esc($a['aktif'] ? 'Aktif' : 'Nonaktif') ?></td>
                         <td class="px-4 py-3 text-center">
                             <a href="<?= base_url('/asuransi-pasien/edit/' . $a['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
@@ -64,7 +57,7 @@
 </div>
 
 <div class="mt-10">
-    <?= $pager->links('pasien', 'pagination') ?>
+    <?= $pager->links('asuransi_pasien', 'pagination') ?>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>
@@ -83,43 +76,3 @@
         });
     </script>
 <?php endif; ?>
-
-<script>
-    document.querySelector('form').addEventListener('submit', function() {
-        setTimeout(() => {
-            document.getElementById('keyword').value = '';
-        }, 100);
-    });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const deleteButtons = document.querySelectorAll('.btn-delete');
-
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                const url = this.getAttribute('data-url');
-
-                Swal.fire({
-                    title: 'Yakin hapus data ini?',
-                    text: "Data yang dihapus tidak bisa dikembalikan!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = url;
-                    }
-                });
-            });
-        });
-    });
-</script>
-
-
-<?= $this->endSection() ?>

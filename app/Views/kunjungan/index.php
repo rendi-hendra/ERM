@@ -44,7 +44,7 @@
                         <td class="px-4 py-3"><?= esc($k['tanggal_kunjungan']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['nama_pasien']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['keluhan']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['dokter']) ?></td>
+                        <td class="px-4 py-3"><?= esc($k['dpjp']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['metode_pembayaran']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['nama_asuransi']) ?></td>
                         <td class="px-4 py-3 text-center">
@@ -66,7 +66,7 @@
 </div>
 
 <div class="mt-10">
-    <?= $pager->links('pasien', 'pagination') ?>
+    <?= $pager->links('kunjungan', 'pagination') ?>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>

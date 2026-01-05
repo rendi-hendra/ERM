@@ -23,7 +23,7 @@ class Auth extends BaseController
                     'logged_in' => true,
                     'user_id'   => $user['id'],
                     'username'  => $user['username'],
-                    'nama'      => $user['nama'],
+                    'nama'      => $user['employee_nama'],
                     'role'      => $user['role']
                 ]);
                 return redirect()->to('/pasien');

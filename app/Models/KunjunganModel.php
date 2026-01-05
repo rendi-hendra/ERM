@@ -21,8 +21,9 @@ class KunjunganModel extends Model
 
     public function getWithRelations()
     {
-        return $this->select('kunjungan.*, pasien.nama as nama_pasien, asuransi.nama_asuransi')
+        return $this->select('kunjungan.*, pasien.nama as nama_pasien, employee.nama as dpjp, asuransi.nama_asuransi')
             ->join('pasien', 'pasien.id = kunjungan.pasien_id')
+            ->join('employee', 'employee.id = kunjungan.dpjp')
             ->join('asuransi_pasien', 'asuransi_pasien.id = kunjungan.asuransi_pasien_id', 'left')
             ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id', 'left')
             ->orderBy('kunjungan.tanggal_kunjungan', 'DESC');

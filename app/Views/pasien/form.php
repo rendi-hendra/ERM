@@ -1,45 +1,41 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
 
-<div class="p-6">
-  <h1 class="max-w-3xl mx-auto text-2xl font-bold text-gray-800 mb-6">
+<div>
+  <h1 class="mx-auto text-2xl font-bold text-gray-800 mb-6">
     <?= isset($pasien) ? 'Edit Pasien' : 'Tambah Pasien' ?>
   </h1>
 
-  <div class="max-w-3xl mx-auto bg-white shadow-md rounded-xl p-8">
-    <div class="border-b border-gray-200 pb-2">
-      <h2 class="text-lg font-semibold text-gray-700">
-        <?= isset($pasien) ? 'Form Edit Pasien' : 'Form Tambah Pasien' ?>
-      </h2>
-    </div>
-
+  <div class="mx-auto">
     <form method="post" action="<?= isset($pasien) ? base_url('pasien/update/' . $pasien['id']) : base_url('pasien/create') ?>" class="space-y-5">
       <?= csrf_field() ?>
 
-      <!-- NIK -->
-      <div>
-        <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK <span class="text-red-500">*</span></label>
-        <input type="text" name="nik" id="nik"
-          placeholder="Contoh: 3201012000010001"
-          class="w-full border <?= isset($validation) && $validation->hasError('nik') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          value="<?= esc($oldInput['nik'] ??  ($pasien['nik']) ?? '') ?>" require>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <!-- NIK -->
+        <div>
+          <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK <span class="text-red-500">*</span></label>
+          <input type="text" name="nik" id="nik"
+            placeholder="Contoh: 3201012000010001"
+            class="w-full border <?= isset($validation) && $validation->hasError('nik') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            value="<?= esc($oldInput['nik'] ??  ($pasien['nik']) ?? '') ?>" require>
 
-        <?php if (isset($validation) && $validation->hasError('nik')): ?>
-          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('nik') ?></p>
-        <?php endif; ?>
-      </div>
+          <?php if (isset($validation) && $validation->hasError('nik')): ?>
+            <p class="text-red-500 text-sm mt-1"><?= $validation->getError('nik') ?></p>
+          <?php endif; ?>
+        </div>
 
 
-      <!-- Nama -->
-      <div>
-        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
-        <input type="text" name="nama" id="nama"
-          placeholder="Contoh: Budi Santoso"
-          class="w-full border <?= isset($validation) && $validation->hasError('nama') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          value="<?= esc($oldInput['nama'] ?? ($pasien['nama']) ?? '') ?>" require>
-        <?php if (isset($validation) && $validation->hasError('nama')): ?>
-          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('nama') ?></p>
-        <?php endif; ?>
+        <!-- Nama -->
+        <div>
+          <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+          <input type="text" name="nama" id="nama"
+            placeholder="Contoh: Budi Santoso"
+            class="w-full border <?= isset($validation) && $validation->hasError('nama') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+            value="<?= esc($oldInput['nama'] ?? ($pasien['nama']) ?? '') ?>" require>
+          <?php if (isset($validation) && $validation->hasError('nama')): ?>
+            <p class="text-red-500 text-sm mt-1"><?= $validation->getError('nama') ?></p>
+          <?php endif; ?>
+        </div>
       </div>
 
       <!-- Tanggal Lahir & Jenis Kelamin -->
@@ -68,42 +64,49 @@
         </div>
       </div>
 
-      <!-- No HP -->
-      <div>
-        <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">No. HP <span class="text-red-500">*</span></label>
-        <input type="text" name="no_hp" id="no_hp"
-          placeholder="Contoh: 081234567890"
-          class="w-full border <?= isset($validation) && $validation->hasError('no_hp') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          value="<?= esc($oldInput['no_hp'] ?? ($pasien['no_hp']) ?? '') ?>" require>
-        <?php if (isset($validation) && $validation->hasError('no_hp')): ?>
-          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('no_hp') ?></p>
-        <?php endif; ?>
-      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <!-- Alamat -->
+        <div>
+          <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat <span class="text-red-500">*</span></label>
+          <textarea name="alamat" id="alamat" rows="3"
+            placeholder="contoh: Jl. Merdeka No.123, Jakarta"
+            class="w-full border <?= isset($validation) && $validation->hasError('alamat') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" require><?= esc($oldInput['alamat'] ?? ($pasien['alamat']) ?? '') ?></textarea>
+          <?php if (isset($validation) && $validation->hasError('alamat')): ?>
+            <p class="text-red-500 text-sm mt-1"><?= $validation->getError('alamat') ?></p>
+          <?php endif; ?>
+        </div>
 
-      <!-- Alamat -->
-      <div>
-        <label for="alamat" class="block text-sm font-medium text-gray-700 mb-1">Alamat <span class="text-red-500">*</span></label>
-        <textarea name="alamat" id="alamat" rows="3"
-          placeholder="contoh: Jl. Merdeka No.123, Jakarta"
-          class="w-full border <?= isset($validation) && $validation->hasError('alamat') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" require><?= esc($oldInput['alamat'] ?? ($pasien['alamat']) ?? '') ?></textarea>
-        <?php if (isset($validation) && $validation->hasError('alamat')): ?>
-          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('alamat') ?></p>
-        <?php endif; ?>
+        <!-- No HP -->
+        <div>
+          <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">No. HP <span class="text-red-500">*</span></label>
+          <input type="text" name="no_hp" id="no_hp"
+            placeholder="Contoh: 081234567890"
+            class="w-full border <?= isset($validation) && $validation->hasError('no_hp') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+            value="<?= esc($oldInput['no_hp'] ?? ($pasien['no_hp']) ?? '') ?>" require>
+          <?php if (isset($validation) && $validation->hasError('no_hp')): ?>
+            <p class="text-red-500 text-sm mt-1"><?= $validation->getError('no_hp') ?></p>
+          <?php endif; ?>
+        </div>
       </div>
 
       <!-- Tombol -->
-      <div class="flex justify-between pt-4">
-        <a href="<?= base_url('pasien') ?>" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
-          ← Kembali
-        </a>
+      <div class="pt-3">
         <button type="submit"
-          class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+          class="mr-3 px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
           Simpan
         </button>
+        <a href="<?= base_url('pasien') ?>" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
+          Kembali
+        </a>
       </div>
     </form>
   </div>
 </div>
+
+<!-- Asuransi Pasien -->
+<?php if (isset($pasien)): ?>
+  <?= view('asuransi_pasien/index.php') ?>
+<?php endif; ?>
 
 <?php if (session()->getFlashdata('success')): ?>
   <script>
@@ -116,5 +119,42 @@
     });
   </script>
 <?php endif; ?>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function() {
+    setTimeout(() => {
+      document.getElementById('keyword').value = '';
+    }, 100);
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const url = this.getAttribute('data-url');
+
+        Swal.fire({
+          title: 'Yakin hapus data ini?',
+          text: "Data yang dihapus tidak bisa dikembalikan!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Ya, hapus!',
+          cancelButtonText: 'Batal'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = url;
+          }
+        });
+      });
+    });
+  });
+</script>
 
 <?= $this->endSection() ?>
