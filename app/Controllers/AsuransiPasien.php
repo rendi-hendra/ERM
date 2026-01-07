@@ -143,6 +143,7 @@ class AsuransiPasien extends BaseController
         $pasien = $this->pasienModel->select('id,nik,nama')->findAll();
         $asuransi = $this->asuransiModel->select('id,nama_asuransi')->findAll();
         $asuransiPasien = $this->asuransiPasienModel->find($id);
+        $pasienId = $asuransiPasien['pasien_id'];
 
         $rules = [
             'pasien_id' => [
@@ -194,7 +195,7 @@ class AsuransiPasien extends BaseController
             'aktif'                 => $this->request->getPost('aktif'),
         ]);
 
-        return redirect()->to('/asuransi-pasien')->with('success', 'Data asuransi pasien berhasil diperbarui.');
+        return redirect()->to("/pasien/edit/$pasienId")->with('success', 'Data asuransi pasien berhasil diperbarui.');
     }
 
     public function delete($id)
