@@ -123,7 +123,7 @@ class Pasien extends BaseController
     {
         // Asurnsi pasien
         $keyword = $this->request->getGet('keyword');
-        $asuransiPasienModel = $this->asuransiPasienModel->getWithRelationsNew($id);
+        $asuransiPasienModel = $this->asuransiPasienModel->getWithRelations($id);
 
         if ($keyword) {
             $asuransiPasienModel = $asuransiPasienModel->search($keyword);
