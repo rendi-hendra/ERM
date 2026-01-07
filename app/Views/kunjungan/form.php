@@ -115,7 +115,7 @@
       const asuransiPasienId = document.querySelector('#asuransi_pasien_id');
       const pasienId = document.querySelector(`#pasien`);
 
-      const url = `<?= base_url('/asuransi-pasien/getByPasien/') ?>${pasienId.value}`;
+      const url = `<?= base_url('pasien/asuransi/getByPasien/') ?>${pasienId.value}`;
       fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -137,7 +137,7 @@
       const asuransiId = <?= $kunjungan['asuransi_pasien_id'] ?? 0 ?>;
 
 
-      const url = `<?= base_url('/asuransi-pasien/getByPasien/') ?>${pasienId.value}`;
+      const url = `<?= base_url('pasien/asuransi/getByPasien/') ?>${pasienId.value}`;
       fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -154,7 +154,7 @@
 
     document.querySelector("#pasien").addEventListener("change", function() {
       const pasienId = this.value;
-      const url = `<?= base_url('/asuransi-pasien/getByPasien/') ?>${pasienId}`;
+      const url = `<?= base_url('pasien/asuransi/getByPasien/') ?>${pasienId}`;
 
       asuransiSelect.clear();
       asuransiSelect.clearOptions();
@@ -177,6 +177,5 @@
 
   });
 </script>
-
 
 <?= $this->endSection() ?>

@@ -6,6 +6,7 @@ use App\Models\KunjunganModel;
 use App\Models\PasienModel;
 use App\Models\AsuransiModel;
 use App\Models\AsuransiPasienModel;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Kunjungan extends BaseController
 {
@@ -234,6 +235,12 @@ class Kunjungan extends BaseController
 
     public function delete($id)
     {
+        $data = $this->kunjunganModel->find($id);
+
+        if (!$data) {
+            throw new PageNotFoundException();
+        }
+
         $this->kunjunganModel->delete($id);
         return redirect()->to('/kunjungan')->with('success', 'Data kunjungan pasien berhasil dihapus.');
     }

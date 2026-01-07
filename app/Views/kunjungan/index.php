@@ -53,10 +53,17 @@
                             </a>
 
                             <a href="#"
-                                class="text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3 btn-delete"
-                                data-url="<?= base_url('/kunjungan/delete/' . $k['id']) ?>">
+                                class="btn-delete text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3"
+                                data-id="<?= $k['id'] ?>">
                                 <i class="bi bi-trash text-lg"></i>
                             </a>
+
+                            <form id="delete-form-<?= $k['id'] ?>"
+                                action="<?= base_url('/kunjungan/delete/' . $k['id']) ?>"
+                                method="post"
+                                style="display:none;">
+                                <?= csrf_field() ?>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -96,17 +103,15 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const deleteButtons = document.querySelectorAll('.btn-delete');
-
-        deleteButtons.forEach(button => {
+        document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
 
-                const url = this.getAttribute('data-url');
+                const id = this.dataset.id;
 
                 Swal.fire({
                     title: 'Yakin hapus data ini?',
-                    text: "Data yang dihapus tidak bisa dikembalikan!",
+                    text: 'Data yang dihapus tidak bisa dikembalikan!',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -115,13 +120,14 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = url;
+                        document.getElementById('delete-form-' + id).submit();
                     }
                 });
             });
         });
     });
 </script>
+
 
 
 <?= $this->endSection() ?>
