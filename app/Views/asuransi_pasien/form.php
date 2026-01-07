@@ -16,18 +16,29 @@
     <form method="post" action="<?= isset($asuransiPasien) ? base_url('asuransi-pasien/update/' . $asuransiPasien['id']) : base_url('asuransi-pasien/create') ?>" class="space-y-5">
       <?= csrf_field() ?>
       <div>
-        <label for="pasien" class="block text-sm font-medium text-gray-700 mb-1">Pasien <span class="text-red-500">*</span></label>
-        <select name="pasien_id" id="pasien"
+        <label for="pasien" class="block text-sm font-medium text-gray-700 mb-1">
+          Pasien <span class="text-red-500">*</span>
+        </label>
+        <select id="pasien" disabled
           class="<?= isset($validation) && $validation->hasError('pasien_id') ? 'border-red-500' : 'border-gray-300' ?>">
           <option value="">-- Pilih Pasien --</option>
           <?php foreach ($pasien as $p): ?>
-            <option value="<?= esc($p['id']) ?>" <?= esc($asuransiPasien['pasien_id'] ?? $oldInput['pasien_id'] ?? '') == esc($p['id']) ? 'selected' : '' ?>><?= esc($p['nama']) ?> - <?= esc($p['nik']) ?></option>
+            <option value="<?= esc($p['id']) ?>"
+              <?= esc($asuransiPasien['pasien_id']) == esc($p['id']) ? 'selected' : '' ?>>
+              <?= esc($p['nama']) ?> - <?= esc($p['nik']) ?>
+            </option>
           <?php endforeach; ?>
         </select>
+        <input type="hidden" name="pasien_id"
+          value="<?= esc($asuransiPasien['pasien_id'] ?? $oldInput['pasien_id'] ?? '') ?>">
+
         <?php if (isset($validation) && $validation->hasError('pasien_id')): ?>
-          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('pasien_id') ?></p>
+          <p class="text-red-500 text-sm mt-1">
+            <?= $validation->getError('pasien_id') ?>
+          </p>
         <?php endif; ?>
       </div>
+
 
       <div>
         <label for="asuransi" class="block text-sm font-medium text-gray-700 mb-1">Asuransi <span class="text-red-500">*</span></label>
@@ -102,7 +113,7 @@
           return `<div class="text-gray-800">${escape(data.text)}</div>`;
         }
       }
-    });
+    }).lock();
 
     new TomSelect("#asuransi", {
       placeholder: "Cari asuransi berdasarkan nama ",
