@@ -59,16 +59,13 @@
         <?php endif; ?>
       </div>
       <div>
-        <label for="hak_kelas" class="block text-sm font-medium text-gray-700 mb-1">Hak Kelas</label>
-        <select name="hak_kelas" id="hak_kelas"
-          class="w-full border <?= isset($validation) && $validation->hasError('hak_kelas') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
-          <option value="0">-- Pilih Hak Kelas --</option>
-          <option value="1" <?= esc($asuransiPasien['hak_kelas'] ??  $oldInput['hak_kelas'] ?? '') == '1' ? 'selected' : '' ?>>Kelas 1</option>
-          <option value="2" <?= esc($asuransiPasien['hak_kelas'] ??  $oldInput['hak_kelas'] ?? '') == '2' ? 'selected' : '' ?>>Kelas 2</option>
-          <option value="3" <?= esc($asuransiPasien['hak_kelas'] ??  $oldInput['hak_kelas'] ?? '') == '3' ? 'selected' : '' ?>>Kelas 3</option>
-        </select>
-        <?php if (isset($validation) && $validation->hasError('hak_kelas')): ?>
-          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('hak_kelas') ?></p>
+        <label for="no_kartu" class="block text-sm font-medium text-gray-700 mb-1">No. kartu Asuransi <span class="text-red-500">*</span></label>
+        <input type="text" name="no_kartu" id="no_kartu"
+          class="w-full border <?= isset($validation) && $validation->hasError('no_kartu') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+          placeholder="Contoh: 0001234567890"
+          value="<?= esc($oldInput['no_kartu'] ?? ($asuransiPasien['no_kartu']) ?? '') ?>" require>
+        <?php if (isset($validation) && $validation->hasError('no_kartu')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('no_kartu') ?></p>
         <?php endif; ?>
       </div>
       <div>
