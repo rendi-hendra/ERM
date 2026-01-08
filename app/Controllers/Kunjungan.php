@@ -2,9 +2,10 @@
 
 namespace App\Controllers;
 
-use App\Models\KunjunganModel;
+use App\Models\UnitModel;
 use App\Models\PasienModel;
 use App\Models\AsuransiModel;
+use App\Models\KunjunganModel;
 use App\Models\AsuransiPasienModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
@@ -14,6 +15,7 @@ class Kunjungan extends BaseController
     protected $pasienModel;
     protected $asuransiModel;
     protected $asuransiPasienModel;
+    protected $unitModel;
     protected $validation;
 
     public function __construct()
@@ -22,6 +24,7 @@ class Kunjungan extends BaseController
         $this->pasienModel = new PasienModel();
         $this->asuransiModel = new AsuransiModel();
         $this->asuransiPasienModel = new AsuransiPasienModel();
+        $this->unitModel = new UnitModel();
         $this->validation = \Config\Services::validation();
     }
 
@@ -51,6 +54,7 @@ class Kunjungan extends BaseController
 
         $pasien = $this->pasienModel->select()->findAll();
         $asuransi = $this->asuransiModel->select()->findAll();
+        $unit = $this->unitModel->select()->findAll();
 
 
         $asuransiPasien = $this->asuransiPasienModel->select('asuransi_pasien.*, pasien.nik as nik, pasien.nama as nama_pasien, asuransi.nama_asuransi')
@@ -75,7 +79,13 @@ class Kunjungan extends BaseController
                         'integer'  => 'ID asuransi tidak valid.',
                     ]
                 ],
-
+                'unit_id' => [
+                    'rules' => 'required|integer',
+                    'errors' => [
+                        'required' => 'Unit wajib dipilih.',
+                        'integer'  => 'ID unit tidak valid.',
+                    ]
+                ],
                 'tanggal_kunjungan' => [
                     'rules' => 'required|valid_date',
                     'errors' => [
@@ -111,6 +121,7 @@ class Kunjungan extends BaseController
                     'asuransi_pasien' => $asuransiPasien,
                     'asuransi' => $asuransi,
                     'pasien' => $pasien,
+                    'unit' => $unit,
                     'validation' => $this->validator,
                     'oldInput' => $this->request->getPost()
                 ]);
@@ -119,6 +130,7 @@ class Kunjungan extends BaseController
             $this->kunjunganModel->save([
                 'pasien_id'             => $this->request->getPost('pasien_id'),
                 'asuransi_pasien_id'    => $this->request->getPost('asuransi_pasien_id'),
+                'unit_id'               => $this->request->getPost('unit_id'),
                 'tanggal_kunjungan'       => $this->request->getPost('tanggal_kunjungan'),
                 'metode_pembayaran'       => $this->request->getPost('metode_pembayaran'),
                 'keluhan'               => $this->request->getPost('keluhan'),
@@ -132,6 +144,7 @@ class Kunjungan extends BaseController
             'asuransi_pasien' => $asuransiPasien,
             'asuransi' => $asuransi,
             'pasien' => $pasien,
+            'unit' => $unit,
             'validation' => $this->validator,
         ]);
     }

@@ -44,7 +44,7 @@
                         <td class="px-4 py-3"><?= esc($k['tanggal_kunjungan']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['nama_pasien']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['keluhan']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['dpjp']) ?></td>
+                        <td class="px-4 py-3"><?= esc($k['unit_id']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['metode_pembayaran']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['nama_asuransi']) ?></td>
                         <td class="px-4 py-3 text-center">

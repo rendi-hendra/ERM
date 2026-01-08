@@ -40,8 +40,22 @@
       </div>
 
       <div>
+        <label for="unit" class="block text-sm font-medium text-gray-700 mb-1">Unit <span class="text-red-500">*</span></label>
+        <select name="unit_id" id="unit"
+          class="w-full <?= isset($validation) && $validation->hasError('unit_id') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-2 focus:ring-blue-500">
+          <option value="">-- Pilih Unit --</option>
+          <?php foreach ($unit as $u): ?>
+            <option value="<?= esc($u['id']) ?>" <?= esc($kunjungan['unit_id'] ?? $oldInput['unit_id'] ?? '') == esc($u['id']) ? 'selected' : '' ?>><?= esc($u['nama']) ?></option>
+          <?php endforeach; ?>
+        </select>
+        <?php if (isset($validation) && $validation->hasError('unit_id')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('unit_id') ?></p>
+        <?php endif; ?>
+      </div>
+
+      <div>
         <label for="keluhan" class="block text-sm font-medium text-gray-700 mb-1">Keluhan <span class="text-red-500">*</span></label>
-        <input type="text" name="keluhan" id="kelujan"
+        <input type="text" name="keluhan" id="keluhan"
           class="w-full border <?= isset($validation) && $validation->hasError('keluhan') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
           placeholder="Contoh: Demam"
           value="<?= esc($oldInput['keluhan'] ?? ($kunjungan['keluhan']) ?? '') ?>" require>
@@ -173,6 +187,10 @@
             asuransiSelect.refreshOptions(false);
           });
       }
+    });
+
+    const unitSelect = new TomSelect("#unit", {
+      placeholder: "Pilih unit...",
     });
 
   });
