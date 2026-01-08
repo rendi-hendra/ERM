@@ -1,14 +1,14 @@
 <h1 class="text-2xl font-bold mb-2 mt-12">Asuransi Pasien</h1>
 <div class="flex justify-between items-center mb-4">
-    <form method="get" action="<?= base_url('asuransi-pasien') ?>" class="inline-flex w-1/2">
-        <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan nik nama atau no.kartu"
+    <form method="get" action="<?= base_url('pasien/edit/' . $pasien['id']) ?>" class="inline-flex w-1/2">
+        <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan nama atau no kartu"
             value="<?= esc($keyword ?? '') ?>"
             class="w-1/2 border border-gray-300 rounded-l-xl px-4 py-2">
         <button type="submit"
             class="bg-gray-900 text-white px-5 py-2 rounded-r-xl hover:bg-gray-700"><i class="bi bi-search"></i></button>
     </form>
 
-    <a href="<?= base_url('/asuransi-pasien/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+    <a href="<?= base_url('pasien/' . $pasien['id'] . '/asuransi/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
         <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah Asuransi Pasien
     </a>
 </div>
@@ -39,15 +39,23 @@
                         <td class="px-4 py-3"><?= esc($a['hak_kelas']) ?></td>
                         <td class="px-4 py-3"><?= esc($a['aktif'] ? 'Aktif' : 'Nonaktif') ?></td>
                         <td class="px-4 py-3 text-center">
-                            <a href="<?= base_url('/asuransi-pasien/edit/' . $a['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
+                            <a href="<?= base_url('pasien/' . $a['pasien_id'] . '/asuransi/edit/' . $a['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
                                 <i class="bi bi-pencil-square text-lg"></i>
                             </a>
 
-                            <a href="#"
-                                class="text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3 btn-delete"
-                                data-url="<?= base_url('/asuransi-pasien/delete/' . $a['id']) ?>">
+                            <a href="<?= base_url('pasien/' . $a['pasien_id'] . '/asuransi/delete/' . $a['id']) ?>"
+                                class="btn-delete-asuransi text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3"
+                                data-pasien="<?= $a['pasien_id'] ?>"
+                                data-asuransi="<?= $a['id'] ?>">
                                 <i class="bi bi-trash text-lg"></i>
                             </a>
+
+                            <form id="delete-form-<?= $a['pasien_id'] ?>-<?= $a['id'] ?>"
+                                action="<?= base_url('pasien/' . $a['pasien_id'] . '/asuransi/delete/' . $a['id']) ?>"
+                                method="post"
+                                style="display:none;">
+                                <?= csrf_field() ?>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -76,3 +84,33 @@
         });
     </script>
 <?php endif; ?>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-delete-asuransi').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const pasienId = this.dataset.pasien;
+                const asuransiId = this.dataset.asuransi;
+
+                Swal.fire({
+                    title: 'Yakin hapus data ini?',
+                    text: 'Data yang dihapus tidak bisa dikembalikan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document
+                            .getElementById(`delete-form-${pasienId}-${asuransiId}`)
+                            .submit();
+                    }
+                });
+            });
+        });
+    });
+</script>

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\AsuransiPasienModel;
 use App\Models\PasienModel;
 use App\Models\AsuransiModel;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class AsuransiPasien extends BaseController
 {
@@ -21,25 +22,6 @@ class AsuransiPasien extends BaseController
         $this->validation = \Config\Services::validation();
     }
 
-    public function index()
-    {
-        $keyword = $this->request->getGet('keyword');
-        $asuransiPasienModel = $this->asuransiPasienModel->getWithRelations();
-
-        if ($keyword) {
-            $asuransiPasienModel = $asuransiPasienModel->search($keyword);
-        }
-
-        $asuransiPasien = $asuransiPasienModel->paginate(10, 'asuransi_pasien');
-        $pager = $this->asuransiPasienModel->pager;
-
-        return view('asuransi_pasien/index', [
-            'asuransiPasien' => $asuransiPasien,
-            'pager' => $pager,
-            'keyword' => $keyword
-        ]);
-    }
-
     public function getByPasien($pasien_id)
     {
         $asuransiPasienModel = $this->asuransiPasienModel;
@@ -53,8 +35,7 @@ class AsuransiPasien extends BaseController
         return $this->response->setJSON($data);
     }
 
-
-    public function create()
+    public function create($id)
     {
 
         $pasien = $this->pasienModel->select('id,nik,nama')->findAll();
@@ -75,6 +56,13 @@ class AsuransiPasien extends BaseController
                     'errors' => [
                         'required' => 'Asuransi wajib dipilih.',
                         'integer'  => 'ID asuransi tidak valid.',
+                    ]
+                ],
+                'hak_kelas' => [
+                    'rules' => 'required|in_list[0,1,2,3]',
+                    'errors' => [
+                        'required' => 'Hak kelas wajib diisi.',
+                        'in_list'  => 'Hak kelas tidak valid.',
                     ]
                 ],
                 'no_kartu' => [
@@ -99,6 +87,7 @@ class AsuransiPasien extends BaseController
                 return view('asuransi_pasien/form', [
                     'asuransi' => $asuransi,
                     'pasien' => $pasien,
+                    'pasienId' => $id,
                     'validation' => $this->validator,
                     'oldInput' => $this->request->getPost()
                 ]);
@@ -107,43 +96,45 @@ class AsuransiPasien extends BaseController
             $this->asuransiPasienModel->save([
                 'pasien_id'             => $this->request->getPost('pasien_id'),
                 'asuransi_id'           => $this->request->getPost('asuransi_id'),
+                'hak_kelas'             => $this->request->getPost('hak_kelas'),
                 'no_kartu'              => $this->request->getPost('no_kartu'),
                 'aktif'                 => $this->request->getPost('aktif'),
             ]);
 
-            return redirect()->to('/asuransi-pasien')->with('success', 'Data asuransi pasien berhasil ditambahkan.');
+            return redirect()->to("/pasien/edit/$id")->with('success', 'Data asuransi pasien berhasil ditambahkan.');
         }
 
         return view('asuransi_pasien/form', [
             'asuransi' => $asuransi,
             'pasien' => $pasien,
+            'pasienId' => $id,
             'validation' => $this->validator,
         ]);
     }
 
 
-    public function edit($id)
+    public function edit($pasienId, $asuransiId)
     {
         $pasien = $this->pasienModel->select('id,nik,nama')->findAll();
         $asuransi = $this->asuransiModel->select('id,nama_asuransi')->findAll();
-        $asuransiPasien = $this->asuransiPasienModel->find($id);
+        $asuransiPasien = $this->asuransiPasienModel->find($asuransiId);
 
         $data = [
             'asuransiPasien' => $asuransiPasien,
             'asuransi' => $asuransi,
             'pasien' => $pasien,
+            'pasienId' => $pasienId,
             'validation' => $this->validation
         ];
 
         return view('asuransi_pasien/form', $data);
     }
 
-    public function update($id)
+    public function update($pasienId, $asuransiId)
     {
         $pasien = $this->pasienModel->select('id,nik,nama')->findAll();
         $asuransi = $this->asuransiModel->select('id,nama_asuransi')->findAll();
-        $asuransiPasien = $this->asuransiPasienModel->find($id);
-        $pasienId = $asuransiPasien['pasien_id'];
+        $asuransiPasien = $this->asuransiPasienModel->find($asuransiId);
 
         $rules = [
             'pasien_id' => [
@@ -160,8 +151,15 @@ class AsuransiPasien extends BaseController
                     'integer'  => 'ID asuransi tidak valid.',
                 ]
             ],
+            'hak_kelas' => [
+                'rules' => 'required|in_list[0,1,2,3]',
+                'errors' => [
+                    'required' => 'Hak kelas wajib diisi.',
+                    'in_list'  => 'Hak kelas tidak valid.',
+                ]
+            ],
             'no_kartu' => [
-                'rules' => "required|min_length[5]|max_length[20]|is_unique[asuransi_pasien.no_kartu,id,{$id}]",
+                'rules' => "required|min_length[5]|max_length[20]|is_unique[asuransi_pasien.no_kartu,id,{$asuransiId}]",
                 'errors' => [
                     'required'   => 'Nomor kartu asuransi wajib diisi.',
                     'min_length' => 'Nomor kartu minimal 5 karakter.',
@@ -183,24 +181,35 @@ class AsuransiPasien extends BaseController
                 'asuransiPasien' => $asuransiPasien,
                 'asuransi' => $asuransi,
                 'pasien' => $pasien,
+                'pasienId' => $pasienId,
                 'validation' => $this->validator,
                 'oldInput' => $this->request->getPost()
             ]);
         }
 
-        $this->asuransiPasienModel->update($id, [
+        $this->asuransiPasienModel->update($asuransiId, [
             'pasien_id'             => $this->request->getPost('pasien_id'),
             'asuransi_id'           => $this->request->getPost('asuransi_id'),
             'no_kartu'              => $this->request->getPost('no_kartu'),
+            'hak_kelas'             => $this->request->getPost('hak_kelas'),
             'aktif'                 => $this->request->getPost('aktif'),
         ]);
 
         return redirect()->to("/pasien/edit/$pasienId")->with('success', 'Data asuransi pasien berhasil diperbarui.');
     }
 
-    public function delete($id)
+    public function delete($pasienId, $asuransiId)
     {
-        $this->asuransiPasienModel->delete($id);
-        return redirect()->to('/asuransi-pasien')->with('success', 'Data asuransi pasien berhasil dihapus.');
+        $data = $this->asuransiPasienModel->find($asuransiId);
+
+        if (!$data || $data['pasien_id'] != $pasienId) {
+            throw new PageNotFoundException();
+        }
+
+        $this->asuransiPasienModel->delete($asuransiId);
+
+        return redirect()
+            ->to("/pasien/edit/$pasienId")
+            ->with('success', 'Data asuransi pasien berhasil dihapus.');
     }
 }
