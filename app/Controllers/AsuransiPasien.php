@@ -130,12 +130,11 @@ class AsuransiPasien extends BaseController
         return view('asuransi_pasien/form', $data);
     }
 
-    public function update($id)
+    public function update($pasienId, $asuransiId)
     {
         $pasien = $this->pasienModel->select('id,nik,nama')->findAll();
         $asuransi = $this->asuransiModel->select('id,nama_asuransi')->findAll();
-        $asuransiPasien = $this->asuransiPasienModel->find($id);
-        $pasienId = $asuransiPasien['pasien_id'];
+        $asuransiPasien = $this->asuransiPasienModel->find($asuransiId);
 
         $rules = [
             'pasien_id' => [
@@ -160,7 +159,7 @@ class AsuransiPasien extends BaseController
                 ]
             ],
             'no_kartu' => [
-                'rules' => "required|min_length[5]|max_length[20]|is_unique[asuransi_pasien.no_kartu,id,{$id}]",
+                'rules' => "required|min_length[5]|max_length[20]|is_unique[asuransi_pasien.no_kartu,id,{$asuransiId}]",
                 'errors' => [
                     'required'   => 'Nomor kartu asuransi wajib diisi.',
                     'min_length' => 'Nomor kartu minimal 5 karakter.',
@@ -182,12 +181,13 @@ class AsuransiPasien extends BaseController
                 'asuransiPasien' => $asuransiPasien,
                 'asuransi' => $asuransi,
                 'pasien' => $pasien,
+                'pasienId' => $pasienId,
                 'validation' => $this->validator,
                 'oldInput' => $this->request->getPost()
             ]);
         }
 
-        $this->asuransiPasienModel->update($id, [
+        $this->asuransiPasienModel->update($asuransiId, [
             'pasien_id'             => $this->request->getPost('pasien_id'),
             'asuransi_id'           => $this->request->getPost('asuransi_id'),
             'no_kartu'              => $this->request->getPost('no_kartu'),
