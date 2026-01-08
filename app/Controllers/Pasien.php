@@ -136,6 +136,7 @@ class Pasien extends BaseController
             'pasien'     => $this->pasienModel->find($id),
             'asuransiPasien' => $asuransiPasien,
             'pager' => $pager,
+            'keyword' => $keyword,
             'validation' => $this->validation
         ];
 
