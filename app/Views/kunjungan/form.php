@@ -54,6 +54,16 @@
       </div>
 
       <div>
+        <label for="empOnUnit" class="block text-sm font-medium text-gray-700 mb-1">Dokter <span class="text-red-500">*</span></label>
+        <select name="emp_on_unit_id" id="empOnUnit" disabled
+          class="w-full <?= isset($validation) && $validation->hasError('emp_on_unit_id') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-2 focus:ring-blue-500">
+        </select>
+        <?php if (isset($validation) && $validation->hasError('emp_on_unit_id')): ?>
+          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('emp_on_unit_id') ?></p>
+        <?php endif; ?>
+      </div>
+
+      <div>
         <label for="keluhan" class="block text-sm font-medium text-gray-700 mb-1">Keluhan <span class="text-red-500">*</span></label>
         <input type="text" name="keluhan" id="keluhan"
           class="w-full border <?= isset($validation) && $validation->hasError('keluhan') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
@@ -61,17 +71,6 @@
           value="<?= esc($oldInput['keluhan'] ?? ($kunjungan['keluhan']) ?? '') ?>" require>
         <?php if (isset($validation) && $validation->hasError('keluhan')): ?>
           <p class="text-red-500 text-sm mt-1"><?= $validation->getError('keluhan') ?></p>
-        <?php endif; ?>
-      </div>
-
-      <div>
-        <label for="dokter" class="block text-sm font-medium text-gray-700 mb-1">Dokter <span class="text-red-500">*</span></label>
-        <input type="text" name="dokter" id="dokter"
-          class="w-full border <?= isset($validation) && $validation->hasError('dokter') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          placeholder="Contoh: Dr.Rendi"
-          value="<?= esc($oldInput['dokter']  ?? ($kunjungan['dokter']) ?? '') ?>" require>
-        <?php if (isset($validation) && $validation->hasError('dokter')): ?>
-          <p class="text-red-500 text-sm mt-1"><?= $validation->getError('dokter') ?></p>
         <?php endif; ?>
       </div>
 
@@ -191,6 +190,51 @@
 
     const unitSelect = new TomSelect("#unit", {
       placeholder: "Pilih unit...",
+    });
+
+    const empOnUnitSelect = new TomSelect("#empOnUnit", {
+      placeholder: "Pilih dokter...",
+    });
+
+    unitSelect.on('change', function(unitId) {
+      empOnUnitSelect.clear();
+      empOnUnitSelect.clearOptions();
+
+      if (!unitId) {
+        empOnUnitSelect.disable();
+        return;
+      }
+
+      fetch(`unit/${unitId}/dokter`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.length === 0) {
+            empOnUnitSelect.addOption({
+              value: '',
+              text: 'Dokter di unit ini belum tersedia'
+            });
+
+            empOnUnitSelect.setValue('');
+            empOnUnitSelect.refreshOptions(false);
+            empOnUnitSelect.disable();
+            return;
+          }
+
+          data.forEach(item => {
+            empOnUnitSelect.addOption({
+              value: item.emp_id,
+              text: item.nama
+            });
+          });
+          empOnUnitSelect.enable();
+          if (data.length === 1) {
+            empOnUnitSelect.setValue(data[0].id);
+          }
+          empOnUnitSelect.refreshOptions(false);
+        })
+        .catch(() => {
+          empOnUnitSelect.disable();
+        });
     });
 
   });

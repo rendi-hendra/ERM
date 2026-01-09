@@ -37,4 +37,7 @@ $routes->group('kunjungan', ['filter' => 'auth'], function ($routes) {
     $routes->get('edit/(:num)', 'Kunjungan::edit/$1');
     $routes->post('update/(:num)', 'Kunjungan::update/$1');
     $routes->post('delete/(:num)', 'Kunjungan::delete/$1');
+
+    // Ajax
+    $routes->get('unit/(:num)/dokter', 'Kunjungan::dokterByUnit/$1');
 });

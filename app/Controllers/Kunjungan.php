@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\UnitModel;
 use App\Models\PasienModel;
 use App\Models\AsuransiModel;
+use App\Models\EmpOnUnitModel;
 use App\Models\KunjunganModel;
 use App\Models\AsuransiPasienModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
@@ -16,6 +17,7 @@ class Kunjungan extends BaseController
     protected $asuransiModel;
     protected $asuransiPasienModel;
     protected $unitModel;
+    protected $empOnUnitModel;
     protected $validation;
 
     public function __construct()
@@ -25,6 +27,7 @@ class Kunjungan extends BaseController
         $this->asuransiModel = new AsuransiModel();
         $this->asuransiPasienModel = new AsuransiPasienModel();
         $this->unitModel = new UnitModel();
+        $this->empOnUnitModel = new EmpOnUnitModel();
         $this->validation = \Config\Services::validation();
     }
 
@@ -48,6 +51,15 @@ class Kunjungan extends BaseController
         ]);
     }
 
+    public function dokterByUnit($unitId)
+    {
+        $empOnUnit = $this->empOnUnitModel->getWithEmployee()
+            ->where('unit_id', $unitId)
+            ->findAll();
+
+        return $this->response->setJSON($empOnUnit);
+    }
+
 
     public function create()
     {
@@ -55,6 +67,7 @@ class Kunjungan extends BaseController
         $pasien = $this->pasienModel->select()->findAll();
         $asuransi = $this->asuransiModel->select()->findAll();
         $unit = $this->unitModel->select()->findAll();
+        $empOnUnit = $this->empOnUnitModel->getWithEmployee()->findAll();
 
 
         $asuransiPasien = $this->asuransiPasienModel->select('asuransi_pasien.*, pasien.nik as nik, pasien.nama as nama_pasien, asuransi.nama_asuransi')
@@ -86,6 +99,13 @@ class Kunjungan extends BaseController
                         'integer'  => 'ID unit tidak valid.',
                     ]
                 ],
+                'emp_on_unit_id' => [
+                    'rules' => 'required|integer',
+                    'errors' => [
+                        'required' => 'Dokter wajib dipilih.',
+                        'integer'  => 'ID dokter tidak valid.',
+                    ]
+                ],
                 'tanggal_kunjungan' => [
                     'rules' => 'required|valid_date',
                     'errors' => [
@@ -107,13 +127,6 @@ class Kunjungan extends BaseController
                         'string'  => 'Keluhan tidak valid.',
                     ]
                 ],
-                'dokter' => [
-                    'rules' => 'required|string|max_length[100]',
-                    'errors' => [
-                        'required' => 'Nama dokter wajib diisi.',
-                        'string'  => 'Nama dokter tidak valid.',
-                    ]
-                ],
             ];
 
             if (! $this->validate($rules)) {
@@ -122,6 +135,7 @@ class Kunjungan extends BaseController
                     'asuransi' => $asuransi,
                     'pasien' => $pasien,
                     'unit' => $unit,
+                    'empOnUnit' => $empOnUnit,
                     'validation' => $this->validator,
                     'oldInput' => $this->request->getPost()
                 ]);
@@ -131,10 +145,10 @@ class Kunjungan extends BaseController
                 'pasien_id'             => $this->request->getPost('pasien_id'),
                 'asuransi_pasien_id'    => $this->request->getPost('asuransi_pasien_id'),
                 'unit_id'               => $this->request->getPost('unit_id'),
+                'dpjp'                  => $this->request->getPost('emp_on_unit_id'),
                 'tanggal_kunjungan'       => $this->request->getPost('tanggal_kunjungan'),
                 'metode_pembayaran'       => $this->request->getPost('metode_pembayaran'),
                 'keluhan'               => $this->request->getPost('keluhan'),
-                'dokter'                => $this->request->getPost('dokter'),
             ]);
 
             return redirect()->to('/kunjungan')->with('success', 'Data kunjungan pasien berhasil ditambahkan.');
@@ -145,6 +159,7 @@ class Kunjungan extends BaseController
             'asuransi' => $asuransi,
             'pasien' => $pasien,
             'unit' => $unit,
+            'empOnUnit' => $empOnUnit,
             'validation' => $this->validator,
         ]);
     }
