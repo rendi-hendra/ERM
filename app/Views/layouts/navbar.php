@@ -29,10 +29,10 @@
                 <i class="fa-solid fa-building-columns mr-2"></i> Master Asuransi
             </a>
 
-            <!-- <a href="<?= base_url('asuransi-pasien') ?>"
-                class="flex items-center <?= navActive('asuransi-pasien', $uri) ?>">
-                <i class="bi bi-person-lines-fill mr-2"></i> Asuransi Pasien
-            </a> -->
+            <a href="<?= base_url('unit') ?>"
+                class="flex items-center <?= navActive('unit', $uri) ?>">
+                <i class="bi bi-hospital-fill mr-2"></i> Master Unit
+            </a>
 
             <a href="<?= base_url('kunjungan') ?>"
                 class="flex items-center <?= navActive('kunjungan', $uri) ?>">
