@@ -25,27 +25,29 @@
                 <!-- Kategori Unit -->
                 <div>
                     <label for="kategori" class="block text-sm font-medium text-gray-700 mb-1">Kategori Unit <span class="text-red-500">*</span></label>
-                    <input type="text" name="kategori" id="kategori"
-                        placeholder="Contoh: Rawat Jalan"
-                        class="w-full border <?= isset($validation) && $validation->hasError('kategori') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-                        value="<?= esc($oldInput['kategori'] ?? ($unit['kategori']) ?? '') ?>" require>
+                    <select name="kategori" id="kategori"
+                        class="w-full border <?= isset($validation) && $validation->hasError('kategori') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="" disabled <?= !isset($oldInput['kategori']) && !isset($unit) ? 'selected' : '' ?>>-- Pilih Kategori --</option>
+                        <option value="Rawat Jalan" <?= (isset($oldInput['kategori']) && $oldInput['kategori'] === 'Rawat Jalan') || (isset($unit) && $unit['kategori'] === 'Rawat Jalan') ? 'selected' : '' ?>>Rawat Jalan</option>
+                        <option value="IGD" <?= (isset($oldInput['kategori']) && $oldInput['kategori'] === 'IGD') || (isset($unit) && $unit['kategori'] === 'IGD') ? 'selected' : '' ?>>IGD</option>
+                    </select>
                     <?php if (isset($validation) && $validation->hasError('kategori')): ?>
                         <p class="text-red-500 text-sm mt-1"><?= $validation->getError('kategori') ?></p>
                     <?php endif; ?>
                 </div>
             </div>
-        </form>
-        <div class="flex space-x-3 mt-6">
-            <a href="<?= base_url('unit') ?>"
-                class="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-300">
-                Batal
-            </a>
+            <div class="flex space-x-3 mt-6">
+                <a href="<?= base_url('unit') ?>"
+                    class="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-300">
+                    Batal
+                </a>
 
-            <button type="submit"
-                class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
-                Simpan
-            </button>
-        </div>
+                <button type="submit"
+                    class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+                    Simpan
+                </button>
+            </div>
+        </form>
     </div>
 
     <?= $this->endSection() ?>
