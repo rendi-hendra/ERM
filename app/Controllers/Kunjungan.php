@@ -19,6 +19,57 @@ class Kunjungan extends BaseController
     protected $unitModel;
     protected $empOnUnitModel;
     protected $validation;
+    protected $rules = [
+        'pasien_id' => [
+            'rules' => 'required|integer',
+            'errors' => [
+                'required' => 'Pasien wajib dipilih.',
+                'integer'  => 'ID pasien tidak valid.',
+            ]
+        ],
+        'asuransi_pasien_id' => [
+            'rules' => 'required|integer',
+            'errors' => [
+                'required' => 'Asuransi wajib dipilih.',
+                'integer'  => 'ID asuransi tidak valid.',
+            ]
+        ],
+        'unit_id' => [
+            'rules' => 'required|integer',
+            'errors' => [
+                'required' => 'Unit wajib dipilih.',
+                'integer'  => 'ID unit tidak valid.',
+            ]
+        ],
+        'emp_on_unit_id' => [
+            'rules' => 'required|integer',
+            'errors' => [
+                'required' => 'Dokter wajib dipilih.',
+                'integer'  => 'ID dokter tidak valid.',
+            ]
+        ],
+        'tanggal_kunjungan' => [
+            'rules' => 'required|valid_date',
+            'errors' => [
+                'required' => 'Tanggal kunjungan wajib diisi.',
+                'valid_date'  => 'Tanggal kunjungan tidak valid.',
+            ]
+        ],
+        'metode_pembayaran' => [
+            'rules' => 'required|string',
+            'errors' => [
+                'required' => 'Metode pembayaran wajib diisi.',
+                'string'  => 'Metode pembayaran tidak valid.',
+            ]
+        ],
+        'keluhan' => [
+            'rules' => 'required|string|max_length[255]',
+            'errors' => [
+                'required' => 'Keluhan wajib diisi.',
+                'string'  => 'Keluhan tidak valid.',
+            ]
+        ],
+    ];
 
     public function __construct()
     {
@@ -77,57 +128,7 @@ class Kunjungan extends BaseController
 
         if ($this->request->getMethod() === 'POST') {
 
-            $rules = [
-                'pasien_id' => [
-                    'rules' => 'required|integer',
-                    'errors' => [
-                        'required' => 'Pasien wajib dipilih.',
-                        'integer'  => 'ID pasien tidak valid.',
-                    ]
-                ],
-                'asuransi_pasien_id' => [
-                    'rules' => 'required|integer',
-                    'errors' => [
-                        'required' => 'Asuransi wajib dipilih.',
-                        'integer'  => 'ID asuransi tidak valid.',
-                    ]
-                ],
-                'unit_id' => [
-                    'rules' => 'required|integer',
-                    'errors' => [
-                        'required' => 'Unit wajib dipilih.',
-                        'integer'  => 'ID unit tidak valid.',
-                    ]
-                ],
-                'emp_on_unit_id' => [
-                    'rules' => 'required|integer',
-                    'errors' => [
-                        'required' => 'Dokter wajib dipilih.',
-                        'integer'  => 'ID dokter tidak valid.',
-                    ]
-                ],
-                'tanggal_kunjungan' => [
-                    'rules' => 'required|valid_date',
-                    'errors' => [
-                        'required' => 'Tanggal kunjungan wajib diisi.',
-                        'valid_date'  => 'Tanggal kunjungan tidak valid.',
-                    ]
-                ],
-                'metode_pembayaran' => [
-                    'rules' => 'required|string',
-                    'errors' => [
-                        'required' => 'Metode pembayaran wajib diisi.',
-                        'string'  => 'Metode pembayaran tidak valid.',
-                    ]
-                ],
-                'keluhan' => [
-                    'rules' => 'required|string|max_length[255]',
-                    'errors' => [
-                        'required' => 'Keluhan wajib diisi.',
-                        'string'  => 'Keluhan tidak valid.',
-                    ]
-                ],
-            ];
+            $rules = $this->rules;
 
             if (! $this->validate($rules)) {
                 return view('kunjungan/form', [
@@ -160,6 +161,7 @@ class Kunjungan extends BaseController
             'pasien' => $pasien,
             'unit' => $unit,
             'empOnUnit' => $empOnUnit,
+            'kunjungan' => null,
             'validation' => $this->validator,
         ]);
     }
@@ -170,21 +172,24 @@ class Kunjungan extends BaseController
         $pasien = $this->pasienModel->select('id,nik,nama')->findAll();
         $asuransi = $this->asuransiModel->select('id,nama_asuransi')->findAll();
         $kunjungan = $this->kunjunganModel->getWithRelations()->find($id);
+        $unit = $this->unitModel->select()->findAll();
+        $empOnUnit = $this->empOnUnitModel->getWithEmployee()->findAll();
+
         $asuransiPasien = $this->asuransiPasienModel
             ->select('asuransi_pasien.id, asuransi.nama_asuransi')
             ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id')
             ->where('asuransi_pasien.pasien_id', $id)
             ->findAll();
 
-        $data = [
+        return view('kunjungan/form', [
             'asuransi_pasien' => $asuransiPasien,
             'kunjungan' => $kunjungan,
             'asuransi' => $asuransi,
             'pasien' => $pasien,
+            'unit' => $unit,
+            'empOnUnit' => $empOnUnit,
             'validation' => $this->validation
-        ];
-
-        return view('kunjungan/form', $data);
+        ]);
     }
 
     public function update($id)
@@ -192,58 +197,15 @@ class Kunjungan extends BaseController
         $pasien = $this->pasienModel->select('id,nik,nama')->findAll();
         $asuransi = $this->asuransiModel->select('id,nama_asuransi')->findAll();
         $kunjungan = $this->kunjunganModel->find($id);
-
-        $rules = [
-            'pasien_id' => [
-                'rules' => 'required|integer',
-                'errors' => [
-                    'required' => 'Pasien wajib dipilih.',
-                    'integer'  => 'ID pasien tidak valid.',
-                ]
-            ],
-            'asuransi_pasien_id' => [
-                'rules' => 'required|integer',
-                'errors' => [
-                    'required' => 'Asuransi wajib dipilih.',
-                    'integer'  => 'ID asuransi tidak valid.',
-                ]
-            ],
-
-            'tanggal_kunjungan' => [
-                'rules' => 'required|valid_date',
-                'errors' => [
-                    'required' => 'Tanggal kunjungan wajib diisi.',
-                    'valid_date'  => 'Tanggal kunjungan tidak valid.',
-                ]
-            ],
-            'metode_pembayaran' => [
-                'rules' => 'required|string',
-                'errors' => [
-                    'required' => 'Metode pembayaran wajib diisi.',
-                    'string'  => 'Metode pembayaran tidak valid.',
-                ]
-            ],
-            'keluhan' => [
-                'rules' => 'required|string|max_length[255]',
-                'errors' => [
-                    'required' => 'Keluhan wajib diisi.',
-                    'string'  => 'Keluhan tidak valid.',
-                ]
-            ],
-            'dokter' => [
-                'rules' => 'required|string|max_length[100]',
-                'errors' => [
-                    'required' => 'Nama dokter wajib diisi.',
-                    'string'  => 'Nama dokter tidak valid.',
-                ]
-            ],
-        ];
+        $unit = $this->unitModel->select()->findAll();
+        $rules = $this->rules;
 
         if (! $this->validate($rules)) {
             return view('kunjungan/form', [
                 'kunjungan' => $kunjungan,
                 'asuransi' => $asuransi,
                 'pasien' => $pasien,
+                'unit' => $unit,
                 'validation' => $this->validator,
                 'oldInput' => $this->request->getPost()
             ]);
@@ -252,10 +214,11 @@ class Kunjungan extends BaseController
         $this->kunjunganModel->update($id, [
             'pasien_id'             => $this->request->getPost('pasien_id'),
             'asuransi_pasien_id'    => $this->request->getPost('asuransi_pasien_id'),
+            'unit_id'               => $this->request->getPost('unit_id'),
+            'dpjp'                  => $this->request->getPost('emp_on_unit_id'),
             'tanggal_kunjungan'       => $this->request->getPost('tanggal_kunjungan'),
             'metode_pembayaran'       => $this->request->getPost('metode_pembayaran'),
             'keluhan'               => $this->request->getPost('keluhan'),
-            'dokter'                => $this->request->getPost('dokter'),
         ]);
 
         return redirect()->to('/kunjungan')->with('success', 'Data kunjungan pasien berhasil diperbarui.');

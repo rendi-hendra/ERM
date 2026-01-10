@@ -113,6 +113,8 @@
 <script>
   const OLD_UNIT_ID = <?= json_encode($oldInput['unit_id'] ?? null) ?>;
   const OLD_EMP_ID = <?= json_encode($oldInput['emp_on_unit_id'] ?? null) ?>;
+  const EDIT_UNIT_ID = <?= json_encode($kunjungan['unit_id'] ?? null) ?>;
+  const EDIT_EMP_ID = <?= json_encode($kunjungan['emp_on_unit_id'] ?? null) ?>;
 
   document.addEventListener('DOMContentLoaded', function() {
 
@@ -206,7 +208,7 @@
 
       if (!unitId) return;
 
-      fetch(`unit/${unitId}/dokter`)
+      fetch(`<?= base_url('kunjungan/unit/') ?>${unitId}/dokter`)
         .then(res => res.json())
         .then(data => {
           if (data.length === 0) {
@@ -250,6 +252,9 @@
     if (OLD_UNIT_ID) {
       unitSelect.setValue(OLD_UNIT_ID);
       loadDokterByUnit(OLD_UNIT_ID, OLD_EMP_ID);
+    } else {
+      unitSelect.setValue(EDIT_UNIT_ID);
+      loadDokterByUnit(EDIT_UNIT_ID, EDIT_EMP_ID);
     }
 
   });
