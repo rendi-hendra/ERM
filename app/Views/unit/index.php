@@ -45,10 +45,17 @@
                             </a>
 
                             <a href="#"
-                                class="text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3 btn-delete"
-                                data-url="<?= base_url('/unit/delete/' . $u['id']) ?>">
+                                class="btn-delete text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3"
+                                data-id="<?= $u['id'] ?>">
                                 <i class="bi bi-trash text-lg"></i>
                             </a>
+
+                            <form id="delete-form-<?= $u['id'] ?>"
+                                action="<?= base_url('/unit/delete/' . $u['id']) ?>"
+                                method="post"
+                                style="display:none;">
+                                <?= csrf_field() ?>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -87,7 +94,7 @@
             button.addEventListener('click', function(e) {
                 e.preventDefault();
 
-                const url = this.getAttribute('data-url');
+                const unitId = this.getAttribute('data-id');
 
                 Swal.fire({
                     title: 'Yakin hapus data ini?',
@@ -100,7 +107,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = url;
+                        document.getElementById('delete-form-' + unitId).submit();
                     }
                 });
             });

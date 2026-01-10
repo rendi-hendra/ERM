@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Unit extends BaseController
 {
@@ -76,7 +77,7 @@ class Unit extends BaseController
         $unit = $this->unitModel->find($id);
 
         if (!$unit) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException('Unit tidak ditemukan.');
+            throw new PageNotFoundException('Unit tidak ditemukan.');
         }
 
         return view('unit/form', [
@@ -101,5 +102,16 @@ class Unit extends BaseController
             ]);
             return redirect()->to(base_url('unit'))->with('success', 'Unit berhasil diperbarui.');
         }
+    }
+
+    public function delete($id)
+    {
+        $unit = $this->unitModel->find($id);
+        if (!$unit) {
+            throw new PageNotFoundException('Unit tidak ditemukan.');
+        }
+
+        $this->unitModel->delete($id);
+        return redirect()->to(base_url('unit'))->with('success', 'Unit berhasil dihapus.');
     }
 }
