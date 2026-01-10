@@ -111,6 +111,9 @@
 </div>
 
 <script>
+  const OLD_UNIT_ID = <?= json_encode($oldInput['unit_id'] ?? null) ?>;
+  const OLD_EMP_ID = <?= json_encode($oldInput['emp_on_unit_id'] ?? null) ?>;
+
   document.addEventListener('DOMContentLoaded', function() {
 
     const kunjungan = <?= isset($kunjungan) ? 'true' : 'false' ?>;
@@ -196,14 +199,12 @@
       placeholder: "Pilih dokter...",
     });
 
-    unitSelect.on('change', function(unitId) {
+    function loadDokterByUnit(unitId, selectedEmpId = null) {
       empOnUnitSelect.clear();
       empOnUnitSelect.clearOptions();
+      empOnUnitSelect.disable();
 
-      if (!unitId) {
-        empOnUnitSelect.disable();
-        return;
-      }
+      if (!unitId) return;
 
       fetch(`unit/${unitId}/dokter`)
         .then(res => res.json())
@@ -213,7 +214,6 @@
               value: '',
               text: 'Dokter di unit ini belum tersedia'
             });
-
             empOnUnitSelect.setValue('');
             empOnUnitSelect.refreshOptions(false);
             empOnUnitSelect.disable();
@@ -226,16 +226,31 @@
               text: item.nama
             });
           });
+
           empOnUnitSelect.enable();
-          if (data.length === 1) {
-            empOnUnitSelect.setValue(data[0].id);
+
+          if (selectedEmpId) {
+            empOnUnitSelect.setValue(selectedEmpId);
+          } else if (data.length === 1) {
+            empOnUnitSelect.setValue(data[0].emp_id);
           }
+
           empOnUnitSelect.refreshOptions(false);
         })
         .catch(() => {
           empOnUnitSelect.disable();
         });
+    }
+
+    unitSelect.on('change', function(unitId) {
+      loadDokterByUnit(unitId);
     });
+
+    // Jika edit, load dokter berdasarkan unit yang sudah dipilih
+    if (OLD_UNIT_ID) {
+      unitSelect.setValue(OLD_UNIT_ID);
+      loadDokterByUnit(OLD_UNIT_ID, OLD_EMP_ID);
+    }
 
   });
 </script>
