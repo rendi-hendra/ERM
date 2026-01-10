@@ -89,13 +89,13 @@
 
       <!-- Tombol -->
       <div class="pt-3">
-        <button type="submit"
-          class="mr-3 px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
-          Simpan
-        </button>
-        <a href="<?= base_url('pasien') ?>" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
+        <a href="<?= base_url('pasien') ?>" class="mr-3 px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
           Kembali
         </a>
+        <button type="submit"
+          class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+          Simpan
+        </button>
       </div>
     </form>
   </div>
