@@ -28,6 +28,7 @@ class KunjunganModel extends Model
             ->join('asuransi', 'asuransi.id = asuransi_pasien.asuransi_id', 'left')
             ->join('unit', 'unit.id = kunjungan.unit_id', 'left')
             ->join('employee', 'employee.id = kunjungan.dpjp', 'left')
+            ->orderBy('kunjungan.created_at', 'DESC')
             ->orderBy('kunjungan.tanggal_kunjungan', 'DESC');
     }
 

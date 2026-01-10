@@ -22,13 +22,12 @@
     <table class="min-w-full text-sm">
         <thead class="bg-gray-100 text-gray-700">
             <tr>
-                <th class="px-4 py-3 text-left font-semibold">Nama Pasien</th>
+                <th class="px-4 py-3 text-left font-semibold">Tanggal</th>
+                <th class="px-4 py-3 text-left font-semibold">Pasien</th>
                 <th class="px-4 py-3 text-left font-semibold">Unit</th>
-                <th class="px-4 py-3 text-left font-semibold">Keluhan</th>
                 <th class="px-4 py-3 text-left font-semibold">Dokter</th>
-                <th class="px-4 py-3 text-left font-semibold">Metode Pembayaran</th>
-                <th class="px-4 py-3 text-left font-semibold">Asuransi</th>
-                <th class="px-4 py-3 text-left font-semibold">Tanggal Kunjungan</th>
+                <th class="px-4 py-3 text-left font-semibold">Keluhan</th>
+                <th class="px-4 py-3 text-left font-semibold">Pembayaran</th>
                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
             </tr>
         </thead>
@@ -42,13 +41,22 @@
             <?php else: ?>
                 <?php foreach ($kunjungan as $k): ?>
                     <tr>
+                        <td class="px-4 py-3"><?= esc($k['tanggal_kunjungan']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['nama_pasien']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['nama_unit']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['keluhan']) ?></td>
                         <td class="px-4 py-3"><?= esc($k['nama_dpjp']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['metode_pembayaran']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['nama_asuransi']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['tanggal_kunjungan']) ?></td>
+                        <td class="px-4 py-3 max-w-xs truncate" title="<?= esc($k['keluhan']) ?>">
+                            <?= esc($k['keluhan']) ?>
+                        </td>
+                        <td class="px-4 py-3">
+                            <?php if ($k['metode_pembayaran'] === 'Tunai'): ?>
+                                <span class="px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-700">Tunai</span>
+                            <?php else: ?>
+                                <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
+                                    <?= esc($k['nama_asuransi']) ?>
+                                </span>
+                            <?php endif ?>
+                        </td>
                         <td class="px-4 py-3 text-center">
                             <a href="<?= base_url('/kunjungan/edit/' . $k['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
                                 <i class="bi bi-pencil-square text-lg"></i>
