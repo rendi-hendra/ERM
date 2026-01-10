@@ -75,8 +75,31 @@ class Unit extends BaseController
     {
         $unit = $this->unitModel->find($id);
 
+        if (!$unit) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Unit tidak ditemukan.');
+        }
+
         return view('unit/form', [
             'unit' => $unit
         ]);
+    }
+
+    public function update($id)
+    {
+        if ($this->request->getMethod() === 'POST') {
+            $data = $this->request->getPost();
+            if (! $this->validate($this->rules)) {
+                return view('unit/form', [
+                    'validation' => $this->validation,
+                    'oldInput' => $data,
+                    'unit' => $this->unitModel->find($id)
+                ]);
+            }
+            $this->unitModel->update($id, [
+                'nama' => $data['nama'],
+                'kategori' => $data['kategori']
+            ]);
+            return redirect()->to(base_url('unit'))->with('success', 'Unit berhasil diperbarui.');
+        }
     }
 }
