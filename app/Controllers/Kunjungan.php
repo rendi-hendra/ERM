@@ -27,13 +27,6 @@ class Kunjungan extends BaseController
                 'integer'  => 'ID pasien tidak valid.',
             ]
         ],
-        'asuransi_pasien_id' => [
-            'rules' => 'required|integer',
-            'errors' => [
-                'required' => 'Asuransi wajib dipilih.',
-                'integer'  => 'ID asuransi tidak valid.',
-            ]
-        ],
         'unit_id' => [
             'rules' => 'required|integer',
             'errors' => [
@@ -130,6 +123,18 @@ class Kunjungan extends BaseController
 
             $rules = $this->rules;
 
+            $metode = $this->request->getPost('metode_pembayaran');
+
+            if ($metode === 'asuransi') {
+                $rules['asuransi_pasien_id'] = [
+                    'rules' => 'required|integer',
+                    'errors' => [
+                        'required' => 'Asuransi wajib dipilih.',
+                        'integer'  => 'ID asuransi tidak valid.',
+                    ]
+                ];
+            }
+
             if (! $this->validate($rules)) {
                 return view('kunjungan/form', [
                     'asuransi_pasien' => $asuransiPasien,
@@ -142,9 +147,15 @@ class Kunjungan extends BaseController
                 ]);
             }
 
+            $asuransiId = null;
+
+            if ($metode === 'asuransi') {
+                $asuransiId = $this->request->getPost('asuransi_pasien_id');
+            }
+
             $this->kunjunganModel->save([
                 'pasien_id'             => $this->request->getPost('pasien_id'),
-                'asuransi_pasien_id'    => $this->request->getPost('asuransi_pasien_id'),
+                'asuransi_pasien_id'    => $asuransiId,
                 'unit_id'               => $this->request->getPost('unit_id'),
                 'dpjp'                  => $this->request->getPost('emp_on_unit_id'),
                 'tanggal_kunjungan'       => $this->request->getPost('tanggal_kunjungan'),
@@ -200,6 +211,18 @@ class Kunjungan extends BaseController
         $unit = $this->unitModel->select()->findAll();
         $rules = $this->rules;
 
+        $metode = $this->request->getPost('metode_pembayaran');
+
+        if ($metode === 'asuransi') {
+            $rules['asuransi_pasien_id'] = [
+                'rules' => 'required|integer',
+                'errors' => [
+                    'required' => 'Asuransi wajib dipilih.',
+                    'integer'  => 'ID asuransi tidak valid.',
+                ]
+            ];
+        }
+
         if (! $this->validate($rules)) {
             return view('kunjungan/form', [
                 'kunjungan' => $kunjungan,
@@ -211,9 +234,15 @@ class Kunjungan extends BaseController
             ]);
         }
 
+        $asuransiId = null;
+
+        if ($metode === 'asuransi') {
+            $asuransiId = $this->request->getPost('asuransi_pasien_id');
+        }
+
         $this->kunjunganModel->update($id, [
             'pasien_id'             => $this->request->getPost('pasien_id'),
-            'asuransi_pasien_id'    => $this->request->getPost('asuransi_pasien_id'),
+            'asuransi_pasien_id'    => $asuransiId,
             'unit_id'               => $this->request->getPost('unit_id'),
             'dpjp'                  => $this->request->getPost('emp_on_unit_id'),
             'tanggal_kunjungan'       => $this->request->getPost('tanggal_kunjungan'),

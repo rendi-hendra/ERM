@@ -43,7 +43,6 @@
         <label for="unit" class="block text-sm font-medium text-gray-700 mb-1">Unit <span class="text-red-500">*</span></label>
         <select name="unit_id" id="unit"
           class="w-full <?= isset($validation) && $validation->hasError('unit_id') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-2 focus:ring-blue-500">
-          <option value="">-- Pilih Unit --</option>
           <?php foreach ($unit as $u): ?>
             <option value="<?= esc($u['id']) ?>" <?= esc($kunjungan['unit_id'] ?? $oldInput['unit_id'] ?? '') == esc($u['id']) ? 'selected' : '' ?>><?= esc($u['nama']) ?></option>
           <?php endforeach; ?>
@@ -77,8 +76,7 @@
       <div>
         <label for="metode_pembayaran" class="block text-sm font-medium text-gray-700 mb-1">Metode Pembayaran <span class="text-red-500">*</span></label>
         <select name="metode_pembayaran" id="metode_pembayaran"
-          class="w-full border <?= isset($validation) && $validation->hasError('metode_pembayaran') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
-          <option value="">-- Pilih Metode Pembayaran --</option>
+          class="w-full border <?= isset($validation) && $validation->hasError('metode_pembayaran') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" require>
           <option value="tunai" <?= esc($kunjungan['metode_pembayaran'] ?? $oldInput['metode_pembayaran'] ?? '') == 'tunai' ? 'selected' : '' ?>>Tunai</option>
           <option value="asuransi" <?= esc($kunjungan['metode_pembayaran'] ?? $oldInput['metode_pembayaran'] ?? '') == 'asuransi' ? 'selected' : '' ?>>Asuransi</option>
         </select>
@@ -88,8 +86,8 @@
       </div>
 
       <div>
-        <label for="asuransi_pasien_id" class="block text-sm font-medium text-gray-700 mb-1">Asuransi <span class="text-red-500">*</span></label>
-        <select name="asuransi_pasien_id" id="asuransi_pasien_id"
+        <label for="asuransi_pasien_id" class="block text-sm font-medium text-gray-700 mb-1">Asuransi</label>
+        <select name="asuransi_pasien_id" id="asuransi_pasien_id" disabled
           class="w-full <?= isset($validation) && $validation->hasError('asuransi_pasien_id') ? 'border-red-500' : 'border-gray-300' ?> focus:ring-2 focus:ring-blue-500">
         </select>
         <?php if (isset($validation) && $validation->hasError('asuransi_pasien_id')): ?>
@@ -117,10 +115,6 @@
   const EDIT_EMP_ID = <?= json_encode($kunjungan['emp_on_unit_id'] ?? null) ?>;
 
   document.addEventListener('DOMContentLoaded', function() {
-
-    const kunjungan = <?= isset($kunjungan) ? 'true' : 'false' ?>;
-    const oldInputAsuransiPasienId = "<?= esc($oldInput['asuransi_pasien_id'] ?? '') ?>";
-
     const pasienSelect = new TomSelect("#pasien", {
       placeholder: "Pilih pasien...",
     });
@@ -129,69 +123,98 @@
       placeholder: "Pilih asuransi...",
     });
 
-    if (oldInputAsuransiPasienId) {
-      const asuransiPasienId = document.querySelector('#asuransi_pasien_id');
-      const pasienId = document.querySelector(`#pasien`);
+    const oldAsuransiId = "<?= esc($oldInput['asuransi_pasien_id'] ?? '') ?>";
+    const editAsuransiId = <?= json_encode($kunjungan['asuransi_pasien_id'] ?? null) ?>;
 
-      const url = `<?= base_url('pasien/asuransi/getByPasien/') ?>${pasienId.value}`;
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          data.forEach(item => {
-            asuransiSelect.addOption({
-              value: item.id,
-              text: item.nama_asuransi
-            });
-          });
-          asuransiSelect.setValue(data[0].id ?? '');
-          asuransiSelect.refreshOptions(false);
-        });
+    function disableAsuransi(message = 'Pilih metode pembayaran asuransi') {
+      asuransiSelect.clear();
+      asuransiSelect.clearOptions();
+
+      asuransiSelect.addOption({
+        value: '',
+        text: message
+      });
+
+      asuransiSelect.setValue('');
+      asuransiSelect.refreshOptions(false);
+      asuransiSelect.disable();
     }
 
-
-    if (kunjungan) {
-      const asuransiPasienId = document.querySelector('#asuransi_pasien_id');
-      const pasienId = document.querySelector(`#pasien`);
-      const asuransiId = <?= $kunjungan['asuransi_pasien_id'] ?? 0 ?>;
-
-
-      const url = `<?= base_url('pasien/asuransi/getByPasien/') ?>${pasienId.value}`;
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          data.forEach(item => {
-            asuransiSelect.addOption({
-              value: item.id,
-              text: item.nama_asuransi
-            });
-          });
-          asuransiSelect.setValue(asuransiId ?? '');
-          asuransiSelect.refreshOptions(false);
-        });
-    }
-
-    document.querySelector("#pasien").addEventListener("change", function() {
-      const pasienId = this.value;
+    function loadAsuransiByPasien(pasienId, selectedId = null) {
       const url = `<?= base_url('pasien/asuransi/getByPasien/') ?>${pasienId}`;
 
       asuransiSelect.clear();
       asuransiSelect.clearOptions();
 
-      if (pasienId) {
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            data.forEach(item => {
-              asuransiSelect.addOption({
-                value: item.id,
-                text: item.nama_asuransi
-              });
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+
+          if (!data.length) {
+            disableAsuransi('Pasien ini tidak memiliki asuransi');
+            return;
+          }
+
+          data.forEach(item => {
+            asuransiSelect.addOption({
+              value: item.id,
+              text: item.nama_asuransi
             });
-            asuransiSelect.setValue(data.length ? data[0].id : '');
-            asuransiSelect.refreshOptions(false);
           });
+
+          asuransiSelect.enable();
+
+          if (selectedId) {
+            asuransiSelect.setValue(selectedId);
+          } else {
+            asuransiSelect.setValue(data[0].id);
+          }
+
+          asuransiSelect.refreshOptions(false);
+        })
+        .catch(() => {
+          disableAsuransi('Gagal memuat asuransi');
+        });
+    }
+
+    document.querySelector('#metode_pembayaran').addEventListener('change', function() {
+      const metode = this.value;
+      const pasienId = pasienSelect.getValue();
+
+      if (metode !== 'asuransi') {
+        disableAsuransi('Pembayaran tunai tidak membutuhkan asuransi');
+        return;
+      }
+
+      if (!pasienId) {
+        disableAsuransi('Pilih pasien terlebih dahulu');
+        return;
+      }
+
+      loadAsuransiByPasien(pasienId);
+    });
+
+    document.querySelector('#pasien').addEventListener('change', function() {
+      const pasienId = this.value;
+      const metode = document.querySelector('#metode_pembayaran').value;
+
+      if (metode === 'asuransi' && pasienId) {
+        loadAsuransiByPasien(pasienId);
+      } else {
+        disableAsuransi();
       }
     });
+
+    const metodePembayaran = document.querySelector('#metode_pembayaran').value;
+    const pasienId = pasienSelect.getValue();
+    const selectedAsuransiId = oldAsuransiId || editAsuransiId;
+
+    if (metodePembayaran === 'asuransi' && pasienId) {
+      loadAsuransiByPasien(pasienId, selectedAsuransiId);
+    } else {
+      disableAsuransi();
+    }
+
 
     const unitSelect = new TomSelect("#unit", {
       placeholder: "Pilih unit...",
@@ -248,7 +271,6 @@
       loadDokterByUnit(unitId);
     });
 
-    // Jika edit, load dokter berdasarkan unit yang sudah dipilih
     if (OLD_UNIT_ID) {
       unitSelect.setValue(OLD_UNIT_ID);
       loadDokterByUnit(OLD_UNIT_ID, OLD_EMP_ID);
