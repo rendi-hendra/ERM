@@ -34,8 +34,8 @@ class Unit extends BaseController
 
     public function index()
     {
-        $keyword = $this->request->getGet('keyword');
         $unitModel = $this->unitModel;
+        $keyword = $this->request->getGet('keyword');
         if ($keyword) {
             $unitModel = $unitModel
                 ->like('nama', $keyword)
@@ -75,13 +75,30 @@ class Unit extends BaseController
     public function edit($id)
     {
         $unit = $this->unitModel->find($id);
+        $employeeOnUnitModel = $this->unitModel->getEmployeesOnUnit($id);
+        $keyword = $this->request->getGet('keyword');
+        if ($keyword) {
+            $employeeOnUnitModel = $employeeOnUnitModel
+                ->groupStart()
+                ->like('employee.nama', $keyword)
+                ->orLike('employee.sip', $keyword)
+                ->groupEnd();
+        }
+
+        $employeeOnUnit = $employeeOnUnitModel->paginate(10, 'emp_on_unit');
+        $pager = $employeeOnUnitModel->pager;
+
 
         if (!$unit) {
             throw new PageNotFoundException('Unit tidak ditemukan.');
         }
 
         return view('unit/form', [
-            'unit' => $unit
+            'unit' => $unit,
+            'unitId' => $unit['id'],
+            'employeeOnUnit' => $employeeOnUnit,
+            'pager' => $pager,
+            'keyword' => $keyword
         ]);
     }
 

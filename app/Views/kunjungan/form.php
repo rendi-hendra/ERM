@@ -114,7 +114,7 @@
   const OLD_UNIT_ID = <?= json_encode($oldInput['unit_id'] ?? null) ?>;
   const OLD_EMP_ID = <?= json_encode($oldInput['emp_on_unit_id'] ?? null) ?>;
   const EDIT_UNIT_ID = <?= json_encode($kunjungan['unit_id'] ?? null) ?>;
-  const EDIT_EMP_ID = <?= json_encode($kunjungan['emp_on_unit_id'] ?? null) ?>;
+  const EDIT_EMP_ID = <?= json_encode($kunjungan['dpjp'] ?? null) ?>;
 
   document.addEventListener('DOMContentLoaded', function() {
     const pasienSelect = new TomSelect("#pasien", {
