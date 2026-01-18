@@ -8,9 +8,15 @@
             class="bg-gray-900 text-white px-5 py-2 rounded-r-xl hover:bg-gray-700"><i class="bi bi-search"></i></button>
     </form>
 
-    <a href="<?= base_url('unit/' . $unit['id'] . '/emp-on-unit/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+    <!-- <a href="<?= base_url('unit/' . $unit['id'] . '/emp-on-unit/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
         <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah Employee
-    </a>
+    </a> -->
+
+    <!-- Modal toggle -->
+    <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" id="createEmpOnUnit" class="text-white rounded-lg bg-gray-900 box-border border border-transparent hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" type="button">
+        <i class="bi bi-person-plus mr-1"></i> Tambah Employee
+    </button>
+
 </div>
 
 <div class="bg-white shadow-sm rounded-2xl overflow-hidden">
@@ -63,6 +69,8 @@
         </tbody>
     </table>
 </div>
+
+<?= view('unit/emp_on_unit/form.php') ?>
 
 <div class="mt-10">
     <?= $pager->links('emp_on_unit', 'pagination') ?>
