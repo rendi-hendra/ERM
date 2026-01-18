@@ -50,4 +50,9 @@
         </form>
     </div>
 
+    <!-- Employee On Unit -->
+    <?php if (isset($unit)): ?>
+        <?= view('unit/emp_on_unit/index.php') ?>
+    <?php endif; ?>
+
     <?= $this->endSection() ?>
