@@ -22,6 +22,6 @@ class UnitModel extends Model
             ->join('emp_on_unit', 'emp_on_unit.unit_id = unit.id')
             ->join('employee', 'employee.id = emp_on_unit.emp_id')
             ->where('unit.id', $unitId)
-            ->orderBy('employee.nama', 'ASC');
+            ->orderBy('employee.updated_at', 'ASC');
     }
 }

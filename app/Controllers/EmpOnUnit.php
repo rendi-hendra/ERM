@@ -18,14 +18,22 @@ class EmpOnUnit extends BaseController
 
     public function getEmployees($unit_id): ResponseInterface
     {
+        $mode = $this->request->getGet('mode');
+        $selected = $this->request->getGet('selected');
+
         $usedEmpIds = $this->empOnUnitModel
             ->where('unit_id', $unit_id)
             ->select('emp_id')
-            ->findColumn('emp_id');
+            ->findColumn('emp_id') ?? [];
+
+        // EDIT → masukkan employee yang sedang dipakai
+        if ($mode === 'edit' && $selected) {
+            $usedEmpIds = array_diff($usedEmpIds, [$selected]);
+        }
 
         $employees = $this->employeesModel
             ->where('jenis', 'dokter')
-            ->whereNotIn('id', $usedEmpIds ?? [])
+            ->whereNotIn('id', $usedEmpIds)
             ->orderBy('nama', 'ASC')
             ->findAll();
 
@@ -64,15 +72,6 @@ class EmpOnUnit extends BaseController
         return redirect()
             ->to(base_url('unit/edit/' . $unit_id))
             ->with('success', 'Employee berhasil ditambahkan ke unit.');
-    }
-
-
-    public function edit($unit_id, $emp_on_unit_id)
-    {
-        return view('unit/emp_on_unit/form', [
-            'unit_id' => $unit_id,
-            'emp_on_unit_id' => $emp_on_unit_id
-        ]);
     }
 
     public function update($unit_id, $emp_on_unit_id)

@@ -79,7 +79,10 @@ class Unit extends BaseController
         $keyword = $this->request->getGet('keyword');
         if ($keyword) {
             $employeeOnUnitModel = $employeeOnUnitModel
-                ->like('nama_employee', $keyword);
+                ->groupStart()
+                ->like('employee.nama', $keyword)
+                ->orLike('employee.sip', $keyword)
+                ->groupEnd();
         }
 
         $employeeOnUnit = $employeeOnUnitModel->paginate(10, 'emp_on_unit');
@@ -92,6 +95,7 @@ class Unit extends BaseController
 
         return view('unit/form', [
             'unit' => $unit,
+            'unitId' => $unit['id'],
             'employeeOnUnit' => $employeeOnUnit,
             'pager' => $pager,
             'keyword' => $keyword

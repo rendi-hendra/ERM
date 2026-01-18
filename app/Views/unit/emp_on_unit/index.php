@@ -1,21 +1,23 @@
 <h1 class="text-2xl font-bold mb-2 mt-12">Employees</h1>
 <div class="flex justify-between items-center mb-4">
     <form method="get" action="<?= base_url('unit/edit/' . $unit['id']) ?>" class="inline-flex w-1/2">
-        <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan nama atau no kartu"
+        <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan nama atau no SIP"
             value="<?= esc($keyword ?? '') ?>"
             class="w-1/2 border border-gray-300 rounded-l-xl px-4 py-2">
         <button type="submit"
             class="bg-gray-900 text-white px-5 py-2 rounded-r-xl hover:bg-gray-700"><i class="bi bi-search"></i></button>
     </form>
 
-    <!-- <a href="<?= base_url('unit/' . $unit['id'] . '/emp-on-unit/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-        <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah Employee
-    </a> -->
-
-    <!-- Modal toggle -->
-    <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" id="createEmpOnUnit" class="text-white rounded-lg bg-gray-900 box-border border border-transparent hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none" type="button">
+    <button
+        id="createEmpOnUnit"
+        data-mode="create"
+        data-unit-id="<?= $unit['id'] ?>"
+        data-modal-target="crud-modal"
+        data-modal-toggle="crud-modal"
+        class="text-white rounded-lg bg-gray-900 px-4 py-2.5">
         <i class="bi bi-person-plus mr-1"></i> Tambah Employee
     </button>
+
 
 </div>
 
@@ -45,9 +47,16 @@
                         <td class="px-4 py-3"><?= esc($e['jenis']) ?></td>
                         <td class="px-4 py-3"><?= esc($e['no_hp']) ?></td>
                         <td class="px-4 py-3 text-center">
-                            <a href="<?= base_url('unit/' . $e['unit_id'] . '/emp-on-unit/edit/' . $e['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
+                            <button
+                                class="btn-edit-emp text-blue-600 hover:bg-gray-200 p-2 rounded-lg"
+                                data-mode="edit"
+                                data-unit-id="<?= $e['unit_id'] ?>"
+                                data-emp-on-unit-id="<?= $e['id'] ?>"
+                                data-employee-id="<?= $e['emp_id'] ?>"
+                                data-modal-target="crud-modal"
+                                data-modal-toggle="crud-modal">
                                 <i class="bi bi-pencil-square text-lg"></i>
-                            </a>
+                            </button>
 
                             <a href="<?= base_url('unit/' . $e['unit_id'] . '/emp-on-unit/delete/' . $e['id']) ?>"
                                 class="btn-delete-asuransi text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3"
