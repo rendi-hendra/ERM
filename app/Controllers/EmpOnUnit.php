@@ -18,26 +18,30 @@ class EmpOnUnit extends BaseController
 
     public function getEmployees($unit_id): ResponseInterface
     {
-        $mode = $this->request->getGet('mode');
+        $mode     = $this->request->getGet('mode') ?? 'create';
         $selected = $this->request->getGet('selected');
 
+        // ambil employee yang sudah ada di unit
         $usedEmpIds = $this->empOnUnitModel
             ->where('unit_id', $unit_id)
             ->select('emp_id')
             ->findColumn('emp_id') ?? [];
 
-        // EDIT → masukkan employee yang sedang dipakai
+        // MODE EDIT → kecualikan employee yang sedang diedit
         if ($mode === 'edit' && $selected) {
             $usedEmpIds = array_diff($usedEmpIds, [$selected]);
         }
 
-        $employees = $this->employeesModel
-            ->where('jenis', 'dokter')
-            ->whereNotIn('id', $usedEmpIds)
-            ->orderBy('nama', 'ASC')
-            ->findAll();
+        $query = $this->employeesModel
+            ->where('jenis', 'dokter');
 
-        return $this->response->setJSON($employees);
+        if (! empty($usedEmpIds)) {
+            $query->whereNotIn('id', $usedEmpIds);
+        }
+
+        return $this->response->setJSON(
+            $query->orderBy('nama', 'ASC')->findAll()
+        );
     }
 
     public function create($unit_id)

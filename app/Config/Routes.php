@@ -38,6 +38,13 @@ $routes->group('kunjungan', ['filter' => 'auth'], function ($routes) {
     $routes->post('update/(:num)', 'Kunjungan::update/$1');
     $routes->post('delete/(:num)', 'Kunjungan::delete/$1');
 
+    // SOAP
+    $routes->get('(:num)/soap', 'Soap::index/$1');
+    $routes->post('(:num)/soap/create', 'Soap::create/$1');
+    $routes->get('(:num)/soap/edit/(:num)', 'Soap::edit/$1/$2');
+    $routes->post('(:num)/soap/update/(:num)', 'Soap::update/$1/$2');
+    $routes->post('(:num)/soap/delete/(:num)', 'Soap::delete/$1/$2');
+
     // Ajax
     $routes->get('unit/(:num)/dokter', 'Kunjungan::dokterByUnit/$1');
 });

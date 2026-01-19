@@ -17,7 +17,10 @@
             <!-- Modal body -->
             <form id="empOnUnitForm" method="post" class="space-y-4 md:space-y-6">
                 <div class="">
+                    <input type="hidden" name="mode" id="formMode" value="<?= old('mode', 'create') ?>">
                     <input type="hidden" name="unit_id" value="<?= esc($unitId ?? old('unit_id')) ?>">
+
+
                     <div class="col-span-2 sm:col-span-1">
                         <label for="employee" class="block mb-2.5 text-sm font-medium text-heading">Nama</label>
                         <select id="employee" name="employee" class="">
@@ -90,22 +93,23 @@
         }
 
         // CREATE
-        document.getElementById('createEmpOnUnit')
-            ?.addEventListener('click', function() {
+        document.getElementById('createEmpOnUnit')?.addEventListener('click', function() {
+            modalTitle.textContent = 'Tambah Data Employee on Unit';
+            form.action = `<?= base_url('unit') ?>/${this.dataset.unitId}/emp-on-unit/create`;
 
-                modalTitle.textContent = 'Tambah Data Employee on Unit';
-                form.action = `<?= base_url('unit') ?>/${this.dataset.unitId}/emp-on-unit/create`;
+            document.getElementById('formMode').value = 'create';
 
-                employeeSelect.clear();
-                loadEmployees(this.dataset.unitId);
-            });
+            employeeSelect.clear();
+            loadEmployees(this.dataset.unitId, null, 'create');
+        });
 
         // EDIT
         document.querySelectorAll('.btn-edit-emp').forEach(btn => {
             btn.addEventListener('click', function() {
-
                 modalTitle.textContent = 'Edit Data Employee on Unit';
                 form.action = `<?= base_url('unit') ?>/${this.dataset.unitId}/emp-on-unit/update/${this.dataset.empOnUnitId}`;
+
+                document.getElementById('formMode').value = 'edit';
 
                 loadEmployees(
                     this.dataset.unitId,
@@ -120,11 +124,14 @@
             modal.classList.remove('hidden');
             modal.classList.add('flex');
 
-            const unitId = "<?= esc(old('unit_id') ?? '') ?>";
-            const employeeId = "<?= esc(old('employee') ?? '') ?>";
+            const unitId = "<?= esc(old('unit_id')) ?>";
+            const employeeId = "<?= esc(old('employee')) ?>";
+            const mode = "<?= esc(old('mode', 'create')) ?>";
+
+            document.getElementById('formMode').value = mode;
 
             if (unitId) {
-                loadEmployees(unitId, employeeId);
+                loadEmployees(unitId, employeeId, mode);
             }
         <?php endif; ?>
 
