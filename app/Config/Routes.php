@@ -59,3 +59,11 @@ $routes->group('unit', ['filter' => 'auth'], function ($routes) {
     // Ajax
     $routes->get('emp-on-unit/getEmployees/(:num)', 'EmpOnUnit::getEmployees/$1');
 });
+
+$routes->group('employees', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'Employees::index');
+    $routes->match(['get', 'post'], 'create', 'Employees::create');
+    $routes->get('edit/(:num)', 'Employees::edit/$1');
+    $routes->post('update/(:num)', 'Employees::update/$1');
+    $routes->post('delete/(:num)', 'Employees::delete/$1');
+});
