@@ -6,7 +6,7 @@
 
 <div class="flex justify-between items-center mb-4">
     <form method="get" action="<?= base_url('employees') ?>" class="inline-flex w-1/2">
-        <input type="text" name="keyword" placeholder="Cari berdasarkan nama atau kategori"
+        <input type="text" name="keyword" placeholder="Cari berdasarkan nama atau SIP"
             value="<?= esc($keyword ?? '') ?>"
             class="w-1/2 border border-gray-300 rounded-l-xl px-4 py-2">
         <button type="submit"
