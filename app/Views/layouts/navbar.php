@@ -34,6 +34,11 @@
                 <i class="bi bi-hospital-fill mr-2"></i> Master Unit
             </a>
 
+            <a href="<?= base_url('employees') ?>"
+                class="flex items-center <?= navActive('employees', $uri) ?>">
+                <i class="bi bi-people-fill mr-2"></i> Master Employees
+            </a>
+
             <a href="<?= base_url('kunjungan') ?>"
                 class="flex items-center <?= navActive('kunjungan', $uri) ?>">
                 <i class="bi bi-person-plus-fill mr-2"></i> Pendaftaran Kunjungan
