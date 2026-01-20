@@ -7,10 +7,12 @@ use App\Controllers\BaseController;
 class Soap extends BaseController
 {
     protected $soapModel;
+    protected $pemeriksaanModel;
 
     public function __construct()
     {
         $this->soapModel = new \App\Models\SoapModel();
+        $this->pemeriksaanModel = new \App\Models\PemeriksaanModel();
     }
 
     public function index($kunjunganId)
@@ -96,10 +98,15 @@ class Soap extends BaseController
     public function edit($kunjunganId, $id)
     {
         $soap = $this->soapModel->find($id);
+        $pemeriksaan = $this->pemeriksaanModel->getPemeriksaanByKunjungan($kunjunganId)->first();
+        $objective = $pemeriksaan
+            ? generateObjective($pemeriksaan)
+            : '- Belum ada pemeriksaan -';
 
         return view('kunjungan/soap/form', [
             'kunjunganId' => $kunjunganId,
-            'soap' => $soap
+            'soap' => $soap,
+            'objective' => $objective
         ]);
     }
 
@@ -108,6 +115,8 @@ class Soap extends BaseController
         if ($this->request->getMethod() === 'POST') {
             $rules = [];
             $soap = $this->request->getPost();
+            $getSoap = $this->soapModel->find($id);
+
             if ($soap['status'] == 0) {
                 $rules['subjective'] = [
                     'rules' => 'required',
@@ -147,6 +156,7 @@ class Soap extends BaseController
             if (!$this->validate($rules)) {
                 return view('kunjungan/soap/form', [
                     'kunjunganId' => $kunjunganId,
+                    'soap' => $getSoap,
                     'validation' => $this->validator,
                     'oldInput' => $this->request->getPost()
                 ]);
