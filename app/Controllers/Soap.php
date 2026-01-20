@@ -25,6 +25,11 @@ class Soap extends BaseController
 
     public function create($kunjunganId)
     {
+        $existingSoap = $this->soapModel->countAllResults();
+        if (!$existingSoap) {
+            return redirect()->to(base_url('/kunjungan/' . $kunjunganId . '/soap'));
+        };
+
         if ($this->request->getMethod() === 'POST') {
             $rules = [];
             $soap = $this->request->getPost();
