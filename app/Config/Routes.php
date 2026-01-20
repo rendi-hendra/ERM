@@ -52,6 +52,13 @@ $routes->group('kunjungan', ['filter' => 'auth'], function ($routes) {
     $routes->post('(:num)/pemeriksaan/update/(:num)', 'Pemeriksaan::update/$1/$2');
     $routes->post('(:num)/pemeriksaan/delete/(:num)', 'Pemeriksaan::delete/$1/$2');
 
+    // Resep
+    $routes->get('(:num)/resep', 'Resep::index/$1');
+    $routes->match(['get', 'post'], '(:num)/Resep/create', 'resep::create/$1');
+    $routes->get('(:num)/resep/edit/(:num)', 'Resep::edit/$1/$2');
+    $routes->post('(:num)/resep/update/(:num)', 'Resep::update/$1/$2');
+    $routes->post('(:num)/resep/delete/(:num)', 'Resep::delete/$1/$2');
+
     // Ajax
     $routes->get('unit/(:num)/dokter', 'Kunjungan::dokterByUnit/$1');
 });
