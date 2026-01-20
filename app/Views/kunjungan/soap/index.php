@@ -1,20 +1,20 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
-
-<h1 class="text-2xl font-bold mb-2">Pendaftaran Kunjungan</h1>
-<p class="text-gray-500 mb-6">Daftarkan kunjungan pasien ke rumah sakit</p>
+<?= $this->include('layouts/tabs') ?>
+<h1 class="text-2xl font-bold mb-2">SOAP</h1>
+<p class="text-gray-500 mb-6">SOAP (Subjective, Objective, Assessment, Plan)</p>
 
 <div class="flex justify-between items-center mb-4">
-    <form method="get" action="<?= base_url('kunjungan') ?>" class="inline-flex w-1/2">
-        <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan tanggal nama atau nama dokter"
+    <form method="get" action="<?= base_url('kunjungan/' . $kunjunganId . '/soap') ?>" class="inline-flex w-1/2">
+        <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan tanggal/nama dokter"
             value="<?= esc($keyword ?? '') ?>"
             class="w-1/2 border border-gray-300 rounded-l-xl px-4 py-2">
         <button type="submit"
             class="bg-gray-900 text-white px-5 py-2 rounded-r-xl hover:bg-gray-700"><i class="bi bi-search"></i></button>
     </form>
 
-    <a href="<?= base_url('/kunjungan/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-        <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah Kunjungan Pasien
+    <a href="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+        <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah SOAP
     </a>
 </div>
 
@@ -23,57 +23,53 @@
         <thead class="bg-gray-100 text-gray-700">
             <tr>
                 <th class="px-4 py-3 text-left font-semibold">Tanggal</th>
-                <th class="px-4 py-3 text-left font-semibold">Pasien</th>
-                <th class="px-4 py-3 text-left font-semibold">Unit</th>
                 <th class="px-4 py-3 text-left font-semibold">Dokter</th>
-                <th class="px-4 py-3 text-left font-semibold">Keluhan</th>
-                <th class="px-4 py-3 text-left font-semibold">Pembayaran</th>
+                <th class="px-4 py-3 text-left font-semibold">Subjective</th>
+                <th class="px-4 py-3 text-left font-semibold">Assessment</th>
+                <th class="px-4 py-3 text-left font-semibold">Status</th>
                 <th class="px-4 py-3 text-center font-semibold">Aksi</th>
             </tr>
         </thead>
         <tbody class="divide-y">
-            <?php if (empty($kunjungan)): ?>
+            <?php if (empty($soap)): ?>
                 <tr>
                     <td colspan="6" class="px-4 py-3 text-center text-gray-500">
-                        Belum ada data kunjungan pasien
+                        Belum ada data SOAP
                     </td>
                 </tr>
             <?php else: ?>
-                <?php foreach ($kunjungan as $k): ?>
+                <?php foreach ($soap as $s): ?>
                     <tr>
-                        <td class="px-4 py-3"><?= esc($k['tanggal_kunjungan']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['nama_pasien']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['nama_unit']) ?></td>
-                        <td class="px-4 py-3"><?= esc($k['nama_dpjp']) ?></td>
-                        <td class="px-4 py-3 max-w-xs truncate" title="<?= esc($k['keluhan']) ?>">
-                            <?= esc($k['keluhan']) ?>
-                        </td>
+                        <td class="px-4 py-3"><?= esc($s['created_at']) ?></td>
+                        <td class="px-4 py-3"><?= esc($s['employee_name']) ?></td>
+                        <td class="px-4 py-3"><?= character_limiter($s['subjective'], 50) ?></td>
+                        <td class="px-4 py-3"><?= esc($s['assesment']) ?? 'Belum melakukan assessment' ?></td>
                         <td class="px-4 py-3">
-                            <?php if ($k['metode_pembayaran'] === 'Tunai'): ?>
-                                <span class="px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-700">Tunai</span>
+                            <?php if ($s['status'] === '0'): ?>
+                                <span class="px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-700">Draft</span>
                             <?php else: ?>
                                 <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
-                                    <?= esc($k['nama_asuransi']) ?>
+                                    <?= esc($s['status']) ?>
                                 </span>
                             <?php endif ?>
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <a href="<?= base_url('/kunjungan/' . $k['id'] . '/soap') ?>" class="text-green-600 hover:bg-gray-200 p-2 rounded-lg">
-                                <i class="bi bi-file-medical text-lg"></i>
+                            <a href="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/detail/' . $s['id']) ?>" class="text-green-600 hover:bg-gray-200 p-2 rounded-lg">
+                                <i class="bi bi-eye text-lg"></i>
                             </a>
-
-                            <a href="<?= base_url('/kunjungan/edit/' . $k['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
+                            <a href="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/edit/' . $s['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
                                 <i class="bi bi-pencil-square text-lg"></i>
                             </a>
 
                             <a href="#"
-                                class="btn-delete text-red-600 hover:bg-gray-200 p-2 rounded-lg ml-3"
-                                data-id="<?= $k['id'] ?>">
+                                class="btn-delete text-red-600 hover:bg-gray-200 p-2 rounded-lg"
+                                data-id="<?= $s['id'] ?>"
+                                data-kunjungan-id="<?= $kunjunganId ?>">
                                 <i class="bi bi-trash text-lg"></i>
                             </a>
 
-                            <form id="delete-form-<?= $k['id'] ?>"
-                                action="<?= base_url('/kunjungan/delete/' . $k['id']) ?>"
+                            <form id="delete-form-<?= $kunjunganId ?>-<?= $s['id'] ?>"
+                                action="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/delete/' . $s['id']) ?>"
                                 method="post"
                                 style="display:none;">
                                 <?= csrf_field() ?>
@@ -87,7 +83,7 @@
 </div>
 
 <div class="mt-10">
-    <?= $pager->links('kunjungan', 'pagination') ?>
+    <?= $pager->links('soap', 'pagination') ?>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>
@@ -122,6 +118,9 @@
                 e.preventDefault();
 
                 const id = this.dataset.id;
+                const kunjunganId = this.dataset.kunjunganId;
+
+                console.log(kunjunganId);
 
                 Swal.fire({
                     title: 'Yakin hapus data ini?',
@@ -134,14 +133,12 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        document.getElementById('delete-form-' + id).submit();
+                        document.getElementById(`delete-form-${kunjunganId}-${id}`).submit();
                     }
                 });
             });
         });
     });
 </script>
-
-
 
 <?= $this->endSection() ?>

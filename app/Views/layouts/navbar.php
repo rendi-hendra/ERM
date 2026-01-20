@@ -8,15 +8,7 @@
             <span class="text-lg font-semibold text-gray-900">Sistem ERM</span>
         </div>
 
-        <?php
-        $uri = service('uri')->getSegment(1);
-        function navActive($segment, $uri)
-        {
-            return $uri === $segment
-                ? 'text-blue-600 font-medium bg-blue-50 px-3 py-1.5 rounded-lg'
-                : 'text-gray-700 hover:text-blue-600';
-        }
-        ?>
+        <?php $uri = service('uri')->getSegment(1); ?>
 
         <div class="flex items-center space-x-6 text-sm">
             <a href="<?= base_url('pasien') ?>"
