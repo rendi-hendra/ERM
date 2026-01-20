@@ -3,43 +3,35 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class Soap extends BaseController
 {
     protected $soapModel;
+    protected $pemeriksaanModel;
 
     public function __construct()
     {
         $this->soapModel = new \App\Models\SoapModel();
+        $this->pemeriksaanModel = new \App\Models\PemeriksaanModel();
     }
 
     public function index($kunjunganId)
     {
-        $soapModel = $this->soapModel->getSoapByEmployee($kunjunganId);
-        $keyword = $this->request->getGet('keyword');
-        $soapModel = $this->soapModel;
-        if ($keyword) {
-            $soapModel = $soapModel
-                ->like('subjective', $keyword)
-                ->orLike('objective', $keyword)
-                ->orLike('assessment', $keyword)
-                ->orLike('plan', $keyword);
-        }
-
-        $soap = $soapModel->paginate(10, 'soap');
-        $pager = $soapModel->pager;
+        $soap = $this->soapModel->getSoapByEmployee($kunjunganId)->findAll();
 
         return view('kunjungan/soap/index', [
             'kunjunganId' => $kunjunganId,
             'soap' => $soap,
-            'pager' => $pager,
-            'keyword' => $keyword,
         ]);
     }
 
     public function create($kunjunganId)
     {
+        $existingSoap = $this->soapModel->countAllResults();
+        if (!$existingSoap) {
+            return redirect()->to(base_url('/kunjungan/' . $kunjunganId . '/soap'));
+        };
+
         if ($this->request->getMethod() === 'POST') {
             $rules = [];
             $soap = $this->request->getPost();
@@ -106,10 +98,15 @@ class Soap extends BaseController
     public function edit($kunjunganId, $id)
     {
         $soap = $this->soapModel->find($id);
+        $pemeriksaan = $this->pemeriksaanModel->getPemeriksaanByKunjungan($kunjunganId)->first();
+        $objective = $pemeriksaan
+            ? generateObjective($pemeriksaan)
+            : '- Belum ada pemeriksaan -';
 
         return view('kunjungan/soap/form', [
             'kunjunganId' => $kunjunganId,
-            'soap' => $soap
+            'soap' => $soap,
+            'objective' => $objective
         ]);
     }
 
@@ -118,6 +115,8 @@ class Soap extends BaseController
         if ($this->request->getMethod() === 'POST') {
             $rules = [];
             $soap = $this->request->getPost();
+            $getSoap = $this->soapModel->find($id);
+
             if ($soap['status'] == 0) {
                 $rules['subjective'] = [
                     'rules' => 'required',
@@ -157,6 +156,7 @@ class Soap extends BaseController
             if (!$this->validate($rules)) {
                 return view('kunjungan/soap/form', [
                     'kunjunganId' => $kunjunganId,
+                    'soap' => $getSoap,
                     'validation' => $this->validator,
                     'oldInput' => $this->request->getPost()
                 ]);

@@ -23,7 +23,7 @@
                 <label for="objective" class="block text-sm font-medium text-gray-700 mb-1">Objective <span class="text-red-500">*</span></label>
                 <textarea name="objective" id="objective"
                     class="w-full border <?= isset($validation) && $validation->hasError('objective') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 disabled:text-gray-500"
-                    placeholder="Objective" disabled><?= esc($oldInput['objective'] ?? ($soap['objective'] ?? 'Belum melakukan pemeriksaan')) ?></textarea>
+                    placeholder="Objective" readonly><?= esc($oldInput['objective'] ?? $objective) ?></textarea>
                 <?php if (isset($validation) && $validation->hasError('objective')): ?>
                     <p class="text-red-500 text-sm mt-1"><?= $validation->getError('objective') ?></p>
                 <?php endif; ?>
