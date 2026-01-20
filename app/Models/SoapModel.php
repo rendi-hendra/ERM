@@ -13,7 +13,7 @@ class SoapModel extends Model
         'employee_id',
         'subjective',
         'objective',
-        'assessment',
+        'assesment',
         'plan',
         'status',
         'created_at',

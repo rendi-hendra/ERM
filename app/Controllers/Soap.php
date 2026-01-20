@@ -37,4 +37,147 @@ class Soap extends BaseController
             'keyword' => $keyword,
         ]);
     }
+
+    public function create($kunjunganId)
+    {
+        if ($this->request->getMethod() === 'POST') {
+            $rules = [];
+            $soap = $this->request->getPost();
+            if ($soap['status'] == 0) {
+                $rules['subjective'] = [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'Subjective wajib diisi saat menyimpan draf.'
+                    ]
+                ];
+            } else {
+                $rules = [
+                    'subjective' => [
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => 'Subjective wajib diisi.'
+                        ]
+                    ],
+                    'objective' => [
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => 'Objective wajib diisi.'
+                        ]
+                    ],
+                    'assessment' => [
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => 'Assessment wajib diisi.'
+                        ]
+                    ],
+                    'plan' => [
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => 'Plan wajib diisi.'
+                        ]
+                    ],
+                ];
+            }
+
+            if (!$this->validate($rules)) {
+                return view('kunjungan/soap/form', [
+                    'kunjunganId' => $kunjunganId,
+                    'validation' => $this->validator,
+                    'oldInput' => $this->request->getPost()
+                ]);
+            }
+
+            $soapData = [
+                'kunjungan_id' => $kunjunganId,
+                'employee_id' => session()->get('employee_id'),
+                'subjective' => $soap['subjective'],
+                'assesment' => $soap['assessment'] ?? null,
+                'status' => $soap['status'],
+            ];
+
+            $this->soapModel->insert($soapData);
+            session()->setFlashdata('success', 'Data SOAP berhasil ditambahkan.');
+            return redirect()->to(base_url('/kunjungan/' . $kunjunganId . '/soap'));
+        }
+
+        return view('kunjungan/soap/form', ['kunjunganId' => $kunjunganId]);
+    }
+
+    public function edit($kunjunganId, $id)
+    {
+        $soap = $this->soapModel->find($id);
+
+        return view('kunjungan/soap/form', [
+            'kunjunganId' => $kunjunganId,
+            'soap' => $soap
+        ]);
+    }
+
+    public function update($kunjunganId, $id)
+    {
+        if ($this->request->getMethod() === 'POST') {
+            $rules = [];
+            $soap = $this->request->getPost();
+            if ($soap['status'] == 0) {
+                $rules['subjective'] = [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'Subjective wajib diisi saat menyimpan draf.'
+                    ]
+                ];
+            } else {
+                $rules = [
+                    'subjective' => [
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => 'Subjective wajib diisi.'
+                        ]
+                    ],
+                    'objective' => [
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => 'Objective wajib diisi.'
+                        ]
+                    ],
+                    'assessment' => [
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => 'Assessment wajib diisi.'
+                        ]
+                    ],
+                    'plan' => [
+                        'rules' => 'required',
+                        'errors' => [
+                            'required' => 'Plan wajib diisi.'
+                        ]
+                    ],
+                ];
+            }
+
+            if (!$this->validate($rules)) {
+                return view('kunjungan/soap/form', [
+                    'kunjunganId' => $kunjunganId,
+                    'validation' => $this->validator,
+                    'oldInput' => $this->request->getPost()
+                ]);
+            }
+
+            $soapData = [
+                'subjective' => $soap['subjective'],
+                'assesment' => $soap['assessment'] ?? null,
+                'status' => $soap['status'],
+            ];
+
+            $this->soapModel->update($id, $soapData);
+            session()->setFlashdata('success', 'Data SOAP berhasil diperbarui.');
+            return redirect()->to(base_url('/kunjungan/' . $kunjunganId . '/soap'));
+        }
+    }
+
+    public function delete($kunjunganId, $id)
+    {
+        $this->soapModel->delete($id);
+        session()->setFlashdata('success', 'Data SOAP berhasil dihapus.');
+        return redirect()->to(base_url('/kunjungan/' . $kunjunganId . '/soap'));
+    }
 }

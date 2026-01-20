@@ -43,7 +43,7 @@
                         <td class="px-4 py-3"><?= esc($s['created_at']) ?></td>
                         <td class="px-4 py-3"><?= esc($s['employee_name']) ?></td>
                         <td class="px-4 py-3"><?= character_limiter($s['subjective'], 50) ?></td>
-                        <td class="px-4 py-3"><?= esc($s['assesment']) ?></td>
+                        <td class="px-4 py-3"><?= esc($s['assesment']) ?? 'Belum melakukan assessment' ?></td>
                         <td class="px-4 py-3">
                             <?php if ($s['status'] === '0'): ?>
                                 <span class="px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-700">Draft</span>
@@ -63,12 +63,13 @@
 
                             <a href="#"
                                 class="btn-delete text-red-600 hover:bg-gray-200 p-2 rounded-lg"
-                                data-id="<?= $s['id'] ?>">
+                                data-id="<?= $s['id'] ?>"
+                                data-kunjungan-id="<?= $kunjunganId ?>">
                                 <i class="bi bi-trash text-lg"></i>
                             </a>
 
-                            <form id="delete-form-<?= $s['id'] ?>"
-                                action="<?= base_url('/kunjungan/delete/' . $s['id']) ?>"
+                            <form id="delete-form-<?= $kunjunganId ?>-<?= $s['id'] ?>"
+                                action="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/delete/' . $s['id']) ?>"
                                 method="post"
                                 style="display:none;">
                                 <?= csrf_field() ?>
@@ -117,6 +118,9 @@
                 e.preventDefault();
 
                 const id = this.dataset.id;
+                const kunjunganId = this.dataset.kunjunganId;
+
+                console.log(kunjunganId);
 
                 Swal.fire({
                     title: 'Yakin hapus data ini?',
@@ -129,7 +133,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        document.getElementById('delete-form-' + id).submit();
+                        document.getElementById(`delete-form-${kunjunganId}-${id}`).submit();
                     }
                 });
             });
