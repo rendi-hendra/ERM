@@ -4,19 +4,13 @@
 <h1 class="text-2xl font-bold mb-2">SOAP</h1>
 <p class="text-gray-500 mb-6">SOAP (Subjective, Objective, Assessment, Plan)</p>
 
-<div class="flex justify-between items-center mb-4">
-    <form method="get" action="<?= base_url('kunjungan/' . $kunjunganId . '/soap') ?>" class="inline-flex w-1/2">
-        <input type="text" name="keyword" id="keyword" placeholder="Cari berdasarkan tanggal/nama dokter"
-            value="<?= esc($keyword ?? '') ?>"
-            class="w-1/2 border border-gray-300 rounded-l-xl px-4 py-2">
-        <button type="submit"
-            class="bg-gray-900 text-white px-5 py-2 rounded-r-xl hover:bg-gray-700"><i class="bi bi-search"></i></button>
-    </form>
-
-    <a href="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-        <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah SOAP
-    </a>
-</div>
+<?php if (empty($soap)): ?>
+    <div class="flex justify-end items-center mb-4">
+        <a href="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/create') ?>" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+            <i class="bi bi-file-earmark-plus mr-1"></i></i> Tambah SOAP
+        </a>
+    </div>
+<?php endif; ?>
 
 <div class="bg-white shadow-sm rounded-2xl overflow-hidden">
     <table class="min-w-full text-sm">
@@ -80,10 +74,6 @@
             <?php endif; ?>
         </tbody>
     </table>
-</div>
-
-<div class="mt-10">
-    <?= $pager->links('soap', 'pagination') ?>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>

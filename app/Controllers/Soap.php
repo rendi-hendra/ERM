@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class Soap extends BaseController
 {
@@ -16,25 +15,11 @@ class Soap extends BaseController
 
     public function index($kunjunganId)
     {
-        $soapModel = $this->soapModel->getSoapByEmployee($kunjunganId);
-        $keyword = $this->request->getGet('keyword');
-        $soapModel = $this->soapModel;
-        if ($keyword) {
-            $soapModel = $soapModel
-                ->like('subjective', $keyword)
-                ->orLike('objective', $keyword)
-                ->orLike('assessment', $keyword)
-                ->orLike('plan', $keyword);
-        }
-
-        $soap = $soapModel->paginate(10, 'soap');
-        $pager = $soapModel->pager;
+        $soap = $this->soapModel->getSoapByEmployee($kunjunganId)->findAll();
 
         return view('kunjungan/soap/index', [
             'kunjunganId' => $kunjunganId,
             'soap' => $soap,
-            'pager' => $pager,
-            'keyword' => $keyword,
         ]);
     }
 
