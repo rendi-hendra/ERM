@@ -45,8 +45,6 @@ $routes->group('kunjungan', ['filter' => 'auth'], function ($routes) {
     $routes->post('(:num)/soap/update/(:num)', 'Soap::update/$1/$2');
     $routes->post('(:num)/soap/delete/(:num)', 'Soap::delete/$1/$2');
 
-<<<<<<< HEAD
-=======
     // Pemeriksaan
     $routes->get('(:num)/pemeriksaan', 'Pemeriksaan::index/$1');
     $routes->match(['get', 'post'], '(:num)/pemeriksaan/create', 'Pemeriksaan::create/$1');
@@ -54,7 +52,6 @@ $routes->group('kunjungan', ['filter' => 'auth'], function ($routes) {
     $routes->post('(:num)/pemeriksaan/update/(:num)', 'Pemeriksaan::update/$1/$2');
     $routes->post('(:num)/pemeriksaan/delete/(:num)', 'Pemeriksaan::delete/$1/$2');
 
->>>>>>> 1c982b94a2d116650d04b09df734cba9f476381d
     // Ajax
     $routes->get('unit/(:num)/dokter', 'Kunjungan::dokterByUnit/$1');
 });
