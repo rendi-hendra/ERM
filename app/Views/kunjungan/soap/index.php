@@ -37,20 +37,17 @@
                         <td class="px-4 py-3"><?= esc($s['created_at']) ?></td>
                         <td class="px-4 py-3"><?= esc($s['employee_name']) ?></td>
                         <td class="px-4 py-3"><?= character_limiter($s['subjective'], 50) ?></td>
-                        <td class="px-4 py-3"><?= esc($s['assesment']) ?? 'Belum melakukan assessment' ?></td>
+                        <td class="px-4 py-3"><?= esc($s['assesment'] ?? 'Belum melakukan assessment') ?></td>
                         <td class="px-4 py-3">
                             <?php if ($s['status'] === '0'): ?>
                                 <span class="px-2 py-1 text-xs rounded-full bg-gray-200 text-gray-700">Draft</span>
                             <?php else: ?>
                                 <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
-                                    <?= esc($s['status']) ?>
+                                    Final
                                 </span>
                             <?php endif ?>
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <a href="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/detail/' . $s['id']) ?>" class="text-green-600 hover:bg-gray-200 p-2 rounded-lg">
-                                <i class="bi bi-eye text-lg"></i>
-                            </a>
                             <a href="<?= base_url('/kunjungan/' . $kunjunganId . '/soap/edit/' . $s['id']) ?>" class="text-blue-600 hover:bg-gray-200 p-2 rounded-lg btnEdit">
                                 <i class="bi bi-pencil-square text-lg"></i>
                             </a>

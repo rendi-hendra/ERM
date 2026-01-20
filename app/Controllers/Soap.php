@@ -8,11 +8,15 @@ class Soap extends BaseController
 {
     protected $soapModel;
     protected $pemeriksaanModel;
+    protected $resepModel;
+    protected $resepDetailModel;
 
     public function __construct()
     {
         $this->soapModel = new \App\Models\SoapModel();
         $this->pemeriksaanModel = new \App\Models\PemeriksaanModel();
+        $this->resepModel = new \App\Models\ResepModel();
+        $this->resepDetailModel = new \App\Models\ResepDetailModel();
     }
 
     public function index($kunjunganId)
@@ -75,7 +79,7 @@ class Soap extends BaseController
                 return view('kunjungan/soap/form', [
                     'kunjunganId' => $kunjunganId,
                     'validation' => $this->validator,
-                    'oldInput' => $this->request->getPost()
+                    'oldInput' => $this->request->getPost(),
                 ]);
             }
 
@@ -83,7 +87,7 @@ class Soap extends BaseController
                 'kunjungan_id' => $kunjunganId,
                 'employee_id' => session()->get('employee_id'),
                 'subjective' => $soap['subjective'],
-                'assesment' => $soap['assessment'] ?? null,
+                'assesment' => $soap['assessment'] == '' ? null : $soap['assessment'],
                 'status' => $soap['status'],
             ];
 
@@ -92,7 +96,9 @@ class Soap extends BaseController
             return redirect()->to(base_url('/kunjungan/' . $kunjunganId . '/soap'));
         }
 
-        return view('kunjungan/soap/form', ['kunjunganId' => $kunjunganId]);
+        return view('kunjungan/soap/form', [
+            'kunjunganId' => $kunjunganId,
+        ]);
     }
 
     public function edit($kunjunganId, $id)
@@ -101,12 +107,35 @@ class Soap extends BaseController
         $pemeriksaan = $this->pemeriksaanModel->getPemeriksaanByKunjungan($kunjunganId)->first();
         $objective = $pemeriksaan
             ? generateObjective($pemeriksaan)
-            : '- Belum ada pemeriksaan -';
+            : null;
+
+
+        $resep = $this->resepModel
+            ->where('kunjungan_id', $kunjunganId)
+            ->first();
+
+        $plan = null;
+
+        if ($resep) {
+            $details = $this->resepDetailModel
+                ->select('
+            resep_detail.*,
+            obat.nama,
+            obat.sediaan,
+            obat.kekuatan
+        ')
+                ->join('obat', 'obat.id = resep_detail.obat_id')
+                ->where('resep_header_id', $resep['id'])
+                ->findAll();
+
+            $plan = generatePlan($details);
+        }
 
         return view('kunjungan/soap/form', [
             'kunjunganId' => $kunjunganId,
             'soap' => $soap,
-            'objective' => $objective
+            'objective' => $objective,
+            'plan' => $plan
         ]);
     }
 
@@ -158,13 +187,13 @@ class Soap extends BaseController
                     'kunjunganId' => $kunjunganId,
                     'soap' => $getSoap,
                     'validation' => $this->validator,
-                    'oldInput' => $this->request->getPost()
+                    'oldInput' => $this->request->getPost(),
                 ]);
             }
 
             $soapData = [
                 'subjective' => $soap['subjective'],
-                'assesment' => $soap['assessment'] ?? null,
+                'assesment' => $soap['assessment'] == '' ? null : $soap['assessment'],
                 'status' => $soap['status'],
             ];
 

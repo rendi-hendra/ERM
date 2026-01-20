@@ -23,7 +23,7 @@
                 <label for="objective" class="block text-sm font-medium text-gray-700 mb-1">Objective <span class="text-red-500">*</span></label>
                 <textarea name="objective" id="objective"
                     class="w-full border <?= isset($validation) && $validation->hasError('objective') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 disabled:text-gray-500"
-                    placeholder="Objective" readonly><?= esc($oldInput['objective'] ?? $objective) ?></textarea>
+                    placeholder="<?= isset($objective) ? $objective : 'Belum ada pemeriksaan' ?>" readonly><?= esc($oldInput['objective'] ?? ($objective ?? '')) ?></textarea>
                 <?php if (isset($validation) && $validation->hasError('objective')): ?>
                     <p class="text-red-500 text-sm mt-1"><?= $validation->getError('objective') ?></p>
                 <?php endif; ?>
@@ -41,17 +41,17 @@
                 <label for="plan" class="block text-sm font-medium text-gray-700 mb-1">Plan <span class="text-red-500">*</span></label>
                 <textarea name="plan" id="plan"
                     class="w-full border <?= isset($validation) && $validation->hasError('plan') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 disabled:text-gray-500"
-                    placeholder="Plan" disabled><?= esc($oldInput['plan'] ?? ($soap['plan'] ?? 'Belum menambahkan resep')) ?></textarea>
+                    placeholder="<?= isset($plan) ? $objective : 'Belum ada resep' ?>" readonly><?= esc($oldInput['plan'] ?? ($plan ?? '')) ?></textarea>
                 <?php if (isset($validation) && $validation->hasError('plan')): ?>
                     <p class="text-red-500 text-sm mt-1"><?= $validation->getError('plan') ?></p>
                 <?php endif; ?>
             </div>
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
-                <select name="status" id="status"
+                <select name="status" id="status" <?= isset($soap) && $soap['status'] === '1' ? 'disabled' : '' ?>
                     class="w-full border <?= isset($validation) && $validation->hasError('status') ? 'border-red-500' : 'border-gray-300' ?> rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
-                    <option value="0" <?= esc($oldInput['status'] ?? '') == '0' ? 'selected' : '' ?>>Draf</option>
-                    <option value="1" <?= esc($oldInput['status'] ?? '') == '1' ? 'selected' : '' ?>>Final</option>
+                    <option value="0" <?= esc($oldInput['status'] ?? ($soap['status'] ?? '')) == '0' ? 'selected' : '' ?>>Draf</option>
+                    <option value="1" <?= esc($oldInput['status'] ?? ($soap['status'] ?? '')) == '1' ? 'selected' : '' ?>>Final</option>
                 </select>
                 <?php if (isset($validation) && $validation->hasError('status')): ?>
                     <p class="text-red-500 text-sm mt-1"><?= $validation->getError('status') ?></p>
@@ -61,10 +61,12 @@
                 <a href="<?= base_url('kunjungan/' . $kunjunganId . '/soap') ?>" class="mr-3 px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition">
                     Kembali
                 </a>
-                <button type="submit"
-                    class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
-                    Simpan
-                </button>
+                <?php if (!isset($soap) || $soap['status'] === '0'): ?>
+                    <button type="submit"
+                        class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+                        Simpan
+                    </button>
+                <?php endif ?>
             </div>
         </form>
     </div>
